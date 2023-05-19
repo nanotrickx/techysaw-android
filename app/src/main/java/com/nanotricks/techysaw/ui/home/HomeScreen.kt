@@ -1,33 +1,60 @@
 package com.nanotricks.techysaw.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.sharp.Notifications
+import androidx.compose.material.icons.sharp.Star
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.nanotricks.techysaw.domain.model.HNItemWithTimeAgo
+import com.nanotricks.techysaw.data.model.CourseItem
+import com.nanotricks.techysaw.ui.home.components.CourseSearch
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeUiState
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeViewModel
-import com.nanotricks.techysaw.ui.home.viewmodel.hasMore
+import com.nanotricks.techysaw.ui.theme.gradientMiddle
+import com.nanotricks.techysaw.ui.theme.gradientStart
+import com.nanotricks.techysaw.ui.theme.primaryColor
+import com.nanotricks.techysaw.ui.theme.primaryColor2
+import com.nanotricks.techysaw.util.ScreenSize
 
 
 @Composable
@@ -35,117 +62,158 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = viewModel.uiState.state == HomeUiState.State.Loading),
-        onRefresh = {
-            viewModel.getTopStories(force = true)
-        },
-        modifier = Modifier.fillMaxSize()
+    Scaffold(bottomBar = { BottomBar() }, content = {
+        Surface(
+            modifier = Modifier.padding(it),
+            color = MaterialTheme.colorScheme.background.copy(alpha = 0.1F)
+        ) {
+            Column() {
+                HomeSearchSection()
+                HomeBody(viewModel)
+            }
+        }
+    })
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeSearchSection() {
+    val ss = ScreenSize()
+    val listColors = listOf(gradientStart, gradientMiddle ,primaryColor)
+    Card(
+        shape = RoundedCornerShape(25.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(ss.heightOf(by = 4).dp)
+            .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
-
-        when (viewModel.uiState.state) {
-
-            HomeUiState.State.None,
-            HomeUiState.State.Empty -> Box(
+        Box(modifier = Modifier.fillMaxSize().background(Brush.linearGradient(listColors))) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .padding(top = 30.dp, start = 24.dp, end = 18.dp)
             ) {
-                Text(
-                    "No stories at this time. Please try later.",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+                Column {
+                    Text(
+                        text = "Hello,",
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.surface
+                    )
+                    Text(
+                        text = "Good Morning",
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.surface
+                    )
+                }
+                OutlinedButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.size(40.dp),  //avoid the oval shape
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),  //avoid the little icon
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = primaryColor2,
+                        containerColor = Color.White
+                    )
+                ) {
+                    Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                }
             }
 
-            HomeUiState.State.Error -> Box(
-                modifier = Modifier.fillMaxSize()
+            Box(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 18.dp)
             ) {
-                Text(
-                    viewModel.uiState.error?.localizedMessage ?: "Unknown error. Please try later.",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+                CourseSearch()
             }
-
-            HomeUiState.State.Loading,
-            HomeUiState.State.LoadingMore,
-            HomeUiState.State.LoadingMoreError,
-            HomeUiState.State.Success ->
-                NewsList(
-                    viewModel.uiState,
-                    onClick = {
-
-                    },
-                    onMore = { if (viewModel.uiState.hasMore()) viewModel.fetchNextPage() }
-                )
-
         }
 
+    }
+}
+
+
+@Composable
+fun HomeBody(viewModel: HomeViewModel) {
+    Spacer(modifier = Modifier.height(16.dp))
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+    ) {
+        Text("Categories", style = MaterialTheme.typography.displayMedium, fontSize = 22.sp)
+        Text("See All", style = MaterialTheme.typography.displaySmall, color = gradientMiddle)
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+    when (viewModel.uiState.state) {
+        HomeUiState.State.None,
+        HomeUiState.State.Empty -> Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Text(
+                "No stories at this time. Please try later.",
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        HomeUiState.State.Error -> Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                viewModel.uiState.error?.localizedMessage ?: "Unknown error. Please try later.",
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        HomeUiState.State.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        HomeUiState.State.LoadingMore -> {}
+        HomeUiState.State.LoadingMoreError -> {}
+        HomeUiState.State.Success -> {
+            CourseList(uiState = viewModel.uiState, onClick = {})
+        }
     }
 
 }
 
 @Composable
-private fun NewsList(
+private fun CourseList(
     uiState: HomeUiState,
-    onClick: (HNItemWithTimeAgo) -> Unit,
-    onMore: () -> Unit,
+    onClick: (CourseItem) -> Unit
 ) {
-
-    val onLoadMore by rememberUpdatedState(onMore)
-
-    val listState = rememberLazyListState()
-
-    val canLoadMore = remember {
-
-        // Using derived state because reading the listState otherwise will cause a recomposition,
-        // which will trigger an infinite recomposition.
-        //
-        // Ref: https://issuetracker.google.com/issues/216499432
-        //
-        // A derived state will not trigger the recomposition of this entire Composable, instead it
-        // will recompose only those who are reading the value of it.
-
-        derivedStateOf {
-
-            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull() ?: return@derivedStateOf true
-
-            lastVisibleItem.index >= listState.layoutInfo.totalItemsCount - 3 // 3nd last item
-
-        }
-    }
-
-    LaunchedEffect(canLoadMore) {
-        snapshotFlow { canLoadMore.value }
-            .collect {
-                if (it) onLoadMore()
-            }
-    }
-
+    val ss = ScreenSize()
+    val listState = rememberLazyGridState()
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        LazyColumn(
-            state = listState
+        LazyVerticalGrid(
+            state = listState,
+            columns = GridCells.Fixed(2),
         ) {
 
-            itemsIndexed(uiState.list) { index, item ->
-
-                ListItem(
+            itemsIndexed(uiState.courseList) { index, item ->
+                CourseItem(
                     index + 1,
                     item,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .height(ss.heightOf(by = 4).dp)
                         .clickable { onClick(item) }
                 )
-
             }
 
             // Loading more indicator
@@ -174,7 +242,7 @@ private fun NewsList(
                         uiState.error?.localizedMessage
                             ?: "Unable to fetch latest stories at this time. Please try later.",
                         modifier = Modifier
-                            .align(if (uiState.list.isNullOrEmpty()) Alignment.Center else Alignment.BottomCenter)
+                            .align(if (uiState.courseList.isEmpty()) Alignment.Center else Alignment.BottomCenter)
                             .fillMaxWidth()
                             .background(Color.White.copy(alpha = 0.5f))
                             .padding(8.dp),
@@ -189,58 +257,110 @@ private fun NewsList(
 }
 
 @Composable
-private fun ListItem(
+private fun CourseItem(
     index: Int,
-    itemWithTimeAgo: HNItemWithTimeAgo,
+    course: CourseItem,
     modifier: Modifier = Modifier
 ) {
-
-    Box(
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = primaryColor.copy(alpha = 0.15f),
+        ),
+        shape = RoundedCornerShape(25.dp),
         modifier = modifier
-            .padding(16.dp)
     ) {
-
         Column(
-            modifier = Modifier.fillMaxWidth()
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = course.title, style = MaterialTheme.typography.displayLarge)
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "$index. ${itemWithTimeAgo.item.title ?: "<no title>"}",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal
-                )
+                text = "${course.chapter.size} Courses",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Justify
             )
-
-            val meta = buildAnnotatedString {
-
-                append(itemWithTimeAgo.item.score?.toString() ?: "0")
-                append(" points")
-                append(" by ")
-                withStyle(SpanStyle(fontWeight = FontWeight.Medium)) {
-                    append(itemWithTimeAgo.item.by ?: "Unknown")
-                }
-
-                append(" posted ")
-                withStyle(SpanStyle(fontWeight = FontWeight.Medium)) {
-                    append(itemWithTimeAgo.timeAgo)
-                }
-                append(" ago")
-
-                append("  \uD83D\uDCAC ")
-                append(itemWithTimeAgo.item.descendants?.toString() ?: "no comments")
-            }
-
-            Text(
-                meta,
-                style = TextStyle(
-                    color = Color.Gray
-                )
+            Spacer(modifier = Modifier.height(24.dp))
+            Image(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = "sample image",
+                Modifier.fillMaxSize()
             )
-
-
         }
 
     }
 
+}
+
+data class NavigationMenu(
+    val title: String,
+    val icon: ImageVector
+)
+val menus = listOf(
+    NavigationMenu("Featured", icon = Icons.Sharp.Star),
+    NavigationMenu("My Course", Icons.Sharp.Notifications),
+    NavigationMenu("Saved", Icons.Default.Favorite),
+    NavigationMenu("Setting", Icons.Default.Settings),
+)
+@Composable
+fun BottomBar() {
+
+    val selectedIndex = remember { mutableStateOf(menus.first().title) }
+    fun changeNavigation(selectedMenu: String) {
+        selectedIndex.value = selectedMenu
+//        navigate
+    }
+    NavigationBar(containerColor = Color.White, tonalElevation = 20.dp) {
+        menus.map {
+            val isSelected = selectedIndex.value == it.title
+            NavigationBarItem(
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = Color.Gray.copy(alpha = 0.8f),
+                    unselectedTextColor = Color.Gray.copy(alpha = 0.8f),
+                    indicatorColor = Color.White
+                ),
+                label = {
+                    Text(text = it.title, style = MaterialTheme.typography.labelSmall)
+                },
+                selected = isSelected,
+                onClick = { changeNavigation(it.title) },
+                icon = { Icon(imageVector = it.icon, contentDescription = it.title) })
+        }
+    }
+
+
+//    BottomNavigation(elevation = 10.dp) {
+//
+//        BottomNavigationItem(icon = {
+//            Icon(imageVector = Icons.Default.Home,"")
+//        },
+//            label = { Text(text = "Home") },
+//            selected = (selectedIndex.value == 0),
+//            onClick = {
+//                selectedIndex.value = 0
+//            })
+//
+//        BottomNavigationItem(icon = {
+//            Icon(imageVector = Icons.Default.Favorite,"")
+//        },
+//            label = { Text(text = "Favorite") },
+//            selected = (selectedIndex.value == 1),
+//            onClick = {
+//                selectedIndex.value = 1
+//            })
+//
+//        BottomNavigationItem(icon = {
+//            Icon(imageVector = Icons.Default.Person, "")
+//        },
+//            label = { Text(text = "Profile") },
+//            selected = (selectedIndex.value == 2),
+//            onClick = {
+//                selectedIndex.value = 2
+//            })
+//    }
 }

@@ -1,5 +1,6 @@
 package com.nanotricks.techysaw.di
 
+import com.nanotricks.techysaw.data.repository.course.remote.CourseApi
 import com.nanotricks.techysaw.data.repository.items.remote.TechysawApi
 import dagger.Module
 import dagger.Provides
@@ -14,12 +15,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // sample di implementation
-    @Provides
-    fun provideSampleText(): String {
-        return "Sample text"
-    }
-
     private val interceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -29,12 +24,20 @@ object NetworkModule {
     @Provides
     fun provideTechysawApi(): TechysawApi {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.1")
+            .baseUrl("https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(TechysawApi::class.java)
-
     }
-    
+
+    @Provides
+    fun provideCourseApi(): CourseApi {
+        return Retrofit.Builder()
+            .baseUrl("https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CourseApi::class.java)
+    }
 }

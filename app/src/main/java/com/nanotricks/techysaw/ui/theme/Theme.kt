@@ -13,9 +13,9 @@ private val DarkColorPalette = darkColorScheme(
 )
 
 private val LightColorPalette = lightColorScheme(
-    primary = PrimaryOrange,
+    primary = primaryColor,
     inversePrimary = PrimaryOrangeVariant,
-    secondary = SecondaryOrange
+    secondary = primaryColor2
 
     /* Other default colors to override
     background = Color.White,
@@ -32,7 +32,7 @@ fun TechysawTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+    val colors = if (false) {
         DarkColorPalette
     } else {
         LightColorPalette

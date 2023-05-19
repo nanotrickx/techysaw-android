@@ -1,5 +1,8 @@
 package com.nanotricks.techysaw.di
 
+import com.nanotricks.techysaw.data.repository.course.remote.CourseApi
+import com.nanotricks.techysaw.data.repository.course.remote.CourseApiSource
+import com.nanotricks.techysaw.data.repository.course.remote.CourseRemoteSource
 import com.nanotricks.techysaw.data.repository.items.local.ItemsLocalSource
 import com.nanotricks.techysaw.data.repository.items.local.ItemsMemorySource
 import com.nanotricks.techysaw.data.repository.items.remote.TechysawApi
@@ -24,6 +27,11 @@ object AppModule {
     @Singleton
     fun providesItemsLocalSource(): ItemsLocalSource {
         return ItemsMemorySource()
+    }
+
+    @Provides
+    fun providesCourseRemoteSource(appApi: CourseApi): CourseRemoteSource {
+        return CourseApiSource(appApi)
     }
 
 }

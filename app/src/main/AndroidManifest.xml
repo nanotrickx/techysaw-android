@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".Techysaw"
         android:theme="@style/Theme.Techysaw"
         tools:targetApi="31"
         android:dataExtractionRules="@xml/data_extraction_rules">
