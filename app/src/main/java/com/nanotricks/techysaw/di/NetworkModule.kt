@@ -1,5 +1,6 @@
 package com.nanotricks.techysaw.di
 
+import com.nanotricks.techysaw.data.repository.chapter.remote.ChapterApi
 import com.nanotricks.techysaw.data.repository.course.remote.CourseApi
 import com.nanotricks.techysaw.data.repository.items.remote.TechysawApi
 import dagger.Module
@@ -39,5 +40,15 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(CourseApi::class.java)
+    }
+
+    @Provides
+    fun provideChapterApi(): ChapterApi {
+        return Retrofit.Builder()
+            .baseUrl("https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ChapterApi::class.java)
     }
 }

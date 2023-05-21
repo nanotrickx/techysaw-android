@@ -1,5 +1,15 @@
 package com.nanotricks.techysaw.di
 
+import android.content.Context
+import androidx.room.Room
+import com.nanotricks.techysaw.data.repository.chapter.local.ChapterLocalSource
+import com.nanotricks.techysaw.data.repository.chapter.local.ChapterMemorySource
+import com.nanotricks.techysaw.data.repository.chapter.remote.ChapterApi
+import com.nanotricks.techysaw.data.repository.chapter.remote.ChapterApiSource
+import com.nanotricks.techysaw.data.repository.chapter.remote.ChapterRemoteSource
+//import com.nanotricks.techysaw.data.db.TechysawDb
+import com.nanotricks.techysaw.data.repository.course.local.CourseLocalSource
+import com.nanotricks.techysaw.data.repository.course.local.CourseMemorySource
 import com.nanotricks.techysaw.data.repository.course.remote.CourseApi
 import com.nanotricks.techysaw.data.repository.course.remote.CourseApiSource
 import com.nanotricks.techysaw.data.repository.course.remote.CourseRemoteSource
@@ -11,6 +21,7 @@ import com.nanotricks.techysaw.data.repository.items.remote.ItemsRemoteSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -30,8 +41,35 @@ object AppModule {
     }
 
     @Provides
+    @Singleton
+    fun providesCourseLocalSource(): CourseLocalSource {
+        return CourseMemorySource()
+    }
+
+    @Provides
     fun providesCourseRemoteSource(appApi: CourseApi): CourseRemoteSource {
         return CourseApiSource(appApi)
     }
+
+    @Provides
+    @Singleton
+    fun providesChapterLocalSource(): ChapterLocalSource {
+        return ChapterMemorySource()
+    }
+
+    @Provides
+    fun providesChapterRemoteSource(appApi: ChapterApi): ChapterRemoteSource {
+        return ChapterApiSource(appApi)
+    }
+
+//    @Singleton
+//    @Provides
+//    fun provideRoomDb(@ApplicationContext context: Context):TechysawDb {
+//        return Room.databaseBuilder(
+//            context.applicationContext,
+//            TechysawDb::class.java,
+//            "techysaw_database"
+//        ).fallbackToDestructiveMigration().build()
+//    }
 
 }

@@ -6,6 +6,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
     id("kotlin-kapt")
 }
 
@@ -22,6 +23,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         getByName("release") {
@@ -63,6 +65,10 @@ android {
             )
         }
     }
+
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -78,11 +84,20 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     implementation("com.google.dagger:hilt-android:2.46")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     kapt("com.google.dagger:hilt-compiler:2.46")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+//    editor js
+    implementation("io.github.upstarts:ejkit:2.0.0")
+    implementation("io.github.upstarts:ejkit-gson:2.0.0")
+    implementation("io.github.upstarts:ejkit-moshi:2.0.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     // Coroutine Lifecycle Scopes
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
@@ -99,7 +114,13 @@ dependencies {
     //gms
     implementation("com.google.android.gms:play-services-auth:20.5.0")
 
-    //firebase
+    val room_version = "2.2.6"
+//    kapt("androidx.room:room-compiler:$room_version")]
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+
+//      firebase
 //    implementation(enforcedPlatform("com.google.firebase:firebase-bom:26.1.0")
 //    implementation("com.google.firebase:firebase-core")
 //    implementation("com.google.firebase:firebase-firestore")

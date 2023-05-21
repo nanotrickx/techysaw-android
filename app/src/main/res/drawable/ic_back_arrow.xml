@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_round_box" />
+    <item android:gravity="center_horizontal|center|center_vertical" android:drawable="@drawable/ic_back_arrow_fill" />
+</layer-list>

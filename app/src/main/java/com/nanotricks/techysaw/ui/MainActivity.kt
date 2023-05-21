@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.nanotricks.techysaw.ui.course.CourseScreen
 import com.nanotricks.techysaw.ui.home.HomeScreen
 import com.nanotricks.techysaw.ui.theme.TechysawTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,13 +35,13 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "home"
                     ) {
-
-
                         composable("home") {
                             HomeScreen(navController)
                         }
-
-                        // navigationImplemention
+                        composable("course/{slug}") {
+                            val slug = it.arguments?.getString("slug")!!
+                            CourseScreen(slug = slug, navController)
+                        }
                     }
 
 

@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val itemsRepository: ItemsRepository,
     private val courseRepository: CourseRepository
 ) : ViewModel() {
 
@@ -27,11 +26,28 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getAllCourses() {
-
         _uiState = _uiState.copy(state = HomeUiState.State.Loading)
 
         viewModelScope.launch {
             courseRepository.getAllCourses().collect {
+                if (it is Resource.Success) {
+                    _uiState = _uiState.copy(state = HomeUiState.State.Success,totalCount = it.data.size, courseList = it.data)
+                } else if (it is Resource.Error) {
+                    _uiState = _uiState.copy(
+                        state = HomeUiState.State.Error,
+                        totalCount = 0,
+                        error = it.throwable
+                    )
+                }
+            }
+        }
+
+    }
+    fun filterCourses(searchText: String) {
+        _uiState = _uiState.copy(state = HomeUiState.State.Loading)
+
+        viewModelScope.launch {
+            courseRepository.filterCourse(searchText).collect {
                 if (it is Resource.Success) {
                     _uiState = _uiState.copy(state = HomeUiState.State.Success,totalCount = it.data.size, courseList = it.data)
                 } else if (it is Resource.Error) {

@@ -11,11 +11,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.sharp.Notifications
 import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.ButtonDefaults
@@ -26,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -38,15 +35,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.nanotricks.techysaw.data.model.CourseItem
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.nanotricks.techysaw.data.model.Course
 import com.nanotricks.techysaw.ui.home.components.CourseSearch
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeUiState
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeViewModel
@@ -62,14 +60,18 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val searchCourse = remember { mutableStateOf("") }
     Scaffold(bottomBar = { BottomBar() }, content = {
         Surface(
             modifier = Modifier.padding(it),
             color = MaterialTheme.colorScheme.background.copy(alpha = 0.1F)
         ) {
             Column() {
-                HomeSearchSection()
-                HomeBody(viewModel)
+                HomeSearchSection() {
+                    searchCourse.value = it
+                    viewModel.filterCourses(searchCourse.value.lowercase())
+                }
+                HomeBody(viewModel, navController)
             }
         }
     })
@@ -77,7 +79,7 @@ fun HomeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun HomeSearchSection() {
+fun HomeSearchSection(onSearchChange: (String) -> Unit = {}) {
     val ss = ScreenSize()
     val listColors = listOf(gradientStart, gradientMiddle ,primaryColor)
     Card(
@@ -87,7 +89,9 @@ fun HomeSearchSection() {
             .height(ss.heightOf(by = 4).dp)
             .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize().background(Brush.linearGradient(listColors))) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(listColors))) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -126,7 +130,7 @@ fun HomeSearchSection() {
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 18.dp)
             ) {
-                CourseSearch()
+                CourseSearch(onSearchChange)
             }
         }
 
@@ -135,7 +139,9 @@ fun HomeSearchSection() {
 
 
 @Composable
-fun HomeBody(viewModel: HomeViewModel) {
+fun HomeBody(viewModel: HomeViewModel, navController: NavHostController) {
+    val searchNotFound by rememberLottieComposition(LottieCompositionSpec.Asset("animations/search_notfound.json"))
+
     Spacer(modifier = Modifier.height(16.dp))
     Row(
         horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
@@ -176,13 +182,24 @@ fun HomeBody(viewModel: HomeViewModel) {
         }
 
         HomeUiState.State.Loading -> {
-            CircularProgressIndicator()
+            Spacer(modifier = Modifier.height(18.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                CircularProgressIndicator()
+            }
         }
 
         HomeUiState.State.LoadingMore -> {}
         HomeUiState.State.LoadingMoreError -> {}
         HomeUiState.State.Success -> {
-            CourseList(uiState = viewModel.uiState, onClick = {})
+            if (viewModel.uiState.courseList.isEmpty()) {
+                LottieAnimation(composition = searchNotFound,)
+            } else {
+                CourseList(uiState = viewModel.uiState, onClick = {
+                    navController.navigate("course/${it.slug}") {
+                        this.launchSingleTop = true
+                    }
+                })
+            }
         }
     }
 
@@ -191,7 +208,7 @@ fun HomeBody(viewModel: HomeViewModel) {
 @Composable
 private fun CourseList(
     uiState: HomeUiState,
-    onClick: (CourseItem) -> Unit
+    onClick: (Course) -> Unit
 ) {
     val ss = ScreenSize()
     val listState = rememberLazyGridState()
@@ -259,7 +276,7 @@ private fun CourseList(
 @Composable
 private fun CourseItem(
     index: Int,
-    course: CourseItem,
+    course: Course,
     modifier: Modifier = Modifier
 ) {
     Card(

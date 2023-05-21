@@ -1,10 +1,11 @@
 package com.nanotricks.techysaw.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-typealias CourseList = List<CourseItem>
+typealias CourseList = List<Course>
 
-data class CourseItem(
+data class Course(
     @SerializedName("updatedAt")
     var updatedAt: String? = null,
     @SerializedName("status")
@@ -31,4 +32,4 @@ data class Chapter(
     @SerializedName("updatedAt") var updatedAt: String? = null,
     @SerializedName("courseId") var courseId: String,
     @SerializedName("fileUrl") var fileUrl: String
-)
+) : Serializable
