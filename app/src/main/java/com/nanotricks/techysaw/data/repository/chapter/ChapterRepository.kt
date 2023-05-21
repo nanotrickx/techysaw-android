@@ -20,7 +20,7 @@ class ChapterRepository @Inject constructor(
 ) {
     fun getChapterData(chapter: Chapter) = flow {
         // Use the local cached copy if not forcing
-        if (localSource.isValid() && localSource.getChapter(chapter.slug!!) != null) {
+        if (localSource.getChapter(chapter.slug!!) != null) {
             emit(Resource.Success(localSource.getChapter(chapter.slug!!)!!))
             return@flow
         } else { // Force, clear the data
@@ -35,9 +35,9 @@ class ChapterRepository @Inject constructor(
 
             is Resource.Success -> {
 
-                localSource.saveChapter(chapter.slug!!, Gson().toJson(resource.data))
+                localSource.saveChapter(chapter, Gson().toJson(resource.data))
                 emit(
-                    Resource.Success(ChapterData(chapter.slug!!, Date(),Gson().toJson(resource.data)))
+                    Resource.Success(ChapterData(chapter.slug!!, data = Gson().toJson(resource.data)))
                 )
 
                 // save a local copy

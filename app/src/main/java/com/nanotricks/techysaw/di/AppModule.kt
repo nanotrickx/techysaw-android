@@ -2,6 +2,7 @@ package com.nanotricks.techysaw.di
 
 import android.content.Context
 import androidx.room.Room
+import com.nanotricks.techysaw.data.db.TechysawDb
 import com.nanotricks.techysaw.data.repository.chapter.local.ChapterLocalSource
 import com.nanotricks.techysaw.data.repository.chapter.local.ChapterMemorySource
 import com.nanotricks.techysaw.data.repository.chapter.remote.ChapterApi
@@ -18,6 +19,7 @@ import com.nanotricks.techysaw.data.repository.items.local.ItemsMemorySource
 import com.nanotricks.techysaw.data.repository.items.remote.TechysawApi
 import com.nanotricks.techysaw.data.repository.items.remote.ItemsApiSource
 import com.nanotricks.techysaw.data.repository.items.remote.ItemsRemoteSource
+import com.nanotricks.techysaw.util.PrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,8 +44,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesCourseLocalSource(): CourseLocalSource {
-        return CourseMemorySource()
+    fun providesCourseLocalSource(db: TechysawDb, prefManager: PrefManager): CourseLocalSource {
+        return CourseMemorySource(db.courseDao(), prefManager)
     }
 
     @Provides
@@ -53,8 +55,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesChapterLocalSource(): ChapterLocalSource {
-        return ChapterMemorySource()
+    fun providesChapterLocalSource(db: TechysawDb): ChapterLocalSource {
+        return ChapterMemorySource(db.chapterDao())
     }
 
     @Provides
@@ -62,14 +64,14 @@ object AppModule {
         return ChapterApiSource(appApi)
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideRoomDb(@ApplicationContext context: Context):TechysawDb {
-//        return Room.databaseBuilder(
-//            context.applicationContext,
-//            TechysawDb::class.java,
-//            "techysaw_database"
-//        ).fallbackToDestructiveMigration().build()
-//    }
+    @Singleton
+    @Provides
+    fun provideRoomDb(@ApplicationContext context: Context): TechysawDb {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            TechysawDb::class.java,
+            "techysaw_database"
+        ).fallbackToDestructiveMigration().build()
+    }
 
 }

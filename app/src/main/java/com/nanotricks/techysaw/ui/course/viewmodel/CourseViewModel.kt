@@ -4,13 +4,17 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanotricks.techysaw.data.model.Chapter
 import com.nanotricks.techysaw.data.model.Course
 import com.nanotricks.techysaw.data.model.Resource
 import com.nanotricks.techysaw.data.repository.course.CourseRepository
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +26,9 @@ class CourseViewModel @Inject constructor(
     private var _uiState by mutableStateOf(CourseUiState())
     val uiState: CourseUiState get() = _uiState
 
+    fun updateReadStatus(course: Course, chapter: Chapter) {
+        courseRepository.updateChapterRead(course, chapter)
+    }
     fun fetchCourse(slug: String) {
         Log.d("CourseViewModel", "fetchCourse() called with: slug = $slug")
         _uiState = _uiState.copy(state = CourseUiState.State.Loading)

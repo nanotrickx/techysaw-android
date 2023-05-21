@@ -1,11 +1,16 @@
 package com.nanotricks.techysaw.data.repository.course.local
 
+import android.util.Log
+import com.nanotricks.techysaw.data.db.dao.CourseDao
+import com.nanotricks.techysaw.data.db.model.CourseReadStatus
+import com.nanotricks.techysaw.data.model.Chapter
 import com.nanotricks.techysaw.data.model.Course
 import com.nanotricks.techysaw.data.model.CourseList
 import com.nanotricks.techysaw.data.model.HNItem
 import com.nanotricks.techysaw.data.model.HNTopStories
+import com.nanotricks.techysaw.util.PrefManager
 
-class CourseMemorySource : CourseLocalSource {
+class CourseMemorySource(private val courseDao: CourseDao, private val prefManager: PrefManager) : CourseLocalSource {
 
     private var cachedCourseList = mutableListOf<Course>()
     private var cacheCourseMap = HashMap<String, Course>()
@@ -31,6 +36,19 @@ class CourseMemorySource : CourseLocalSource {
         }
         cachedAt = System.currentTimeMillis()
     }
+
+    override fun setReadChapter(course: Course, chapter: Chapter) {
+        val courseReadStatus = prefManager.courseChapterRead
+        if(courseReadStatus.contains(chapter.slug)) {
+            return
+        }
+        val updatedList = mutableListOf(chapter.slug!!)
+        updatedList.addAll(courseReadStatus)
+        prefManager.courseChapterRead = updatedList.toList()
+        Log.d("cms", "setReadChapter() called with: chapter = ${prefManager.courseChapterRead}")
+    }
+
+    override suspend fun getReadChapter(courseId: String): List<String> = prefManager.courseChapterRead
 
     override suspend fun getCourses(): CourseList = cachedCourseList
 

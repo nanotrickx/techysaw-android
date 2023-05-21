@@ -15,21 +15,7 @@ interface ChapterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addChapter(chapterData: ChapterData)
 
-//    @Query("SELECT * FROM cha")
-//    suspend fun getChapter(slug: String): ChapterData?
+    @Query("SELECT * FROM chapter_data WHERE slug = :slug")
+    suspend fun getChapter(slug: String): ChapterData?
 
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    suspend fun addEmployee(employee: Employee)
-//
-//    @Query("SELECT * FROM employees WHERE employeeId = :empId")
-//    fun findEmployeeById(empId: String): Employee
-//
-//    @Query("SELECT * FROM employees")
-//    fun getAllEmployees(): List<Employee>
-//
-//    @Update
-//    suspend fun updateEmployeeDetails(employee: Employee)
-//
-//    @Delete
-//    suspend fun deleteEmployee(employee: Employee)
 }

@@ -1,6 +1,7 @@
 package com.nanotricks.techysaw.data.repository.course
 
 import androidx.compose.ui.text.toLowerCase
+import com.nanotricks.techysaw.data.model.Chapter
 import com.nanotricks.techysaw.data.model.Course
 import com.nanotricks.techysaw.data.model.Resource
 import com.nanotricks.techysaw.data.repository.course.local.CourseLocalSource
@@ -17,13 +18,22 @@ class CourseRepository @Inject constructor(
     private val localSource: CourseLocalSource
 ) {
 
+    fun updateChapterRead(course: Course, chapter: Chapter) {
+        localSource.setReadChapter(course, chapter)
+    }
+
     fun getCourseBySlug(slug: String) = flow {
         if (localSource.isValid().not()) {
             getAllCourses().collect()
         }
         if (localSource.isValid()) {
+            val chapterReadList = localSource.getReadChapter(slug)
             val course = localSource.getCourseBySlug(slug)
             if (course!= null) {
+                if (chapterReadList.isNullOrEmpty().not())
+                    course.chapter.forEach {
+                        it.isRead = chapterReadList?.contains(it.slug) ?: false
+                    }
                 emit(Resource.Success(course))
                 return@flow
             }

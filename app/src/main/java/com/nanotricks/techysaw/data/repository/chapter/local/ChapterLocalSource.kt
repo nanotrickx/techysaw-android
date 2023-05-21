@@ -5,9 +5,8 @@ import com.nanotricks.techysaw.data.model.Chapter
 import com.nanotricks.techysaw.data.model.Course
 
 interface ChapterLocalSource {
-    suspend fun isValid(): Boolean
 
-    suspend fun saveChapter(slug: String, data: String)
+    suspend fun saveChapter(chapter: Chapter, data: String)
 
     suspend fun getChapter(slug: String): ChapterData?
 
