@@ -3,13 +3,17 @@ package com.nanotricks.techysaw.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.nanotricks.techysaw.ui.course.CourseScreen
 import com.nanotricks.techysaw.ui.home.HomeScreen
 import com.nanotricks.techysaw.ui.theme.TechysawTheme
@@ -19,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,22 +34,26 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val navController = rememberNavController()
+                    val navController = rememberAnimatedNavController()
 
-                    NavHost(
+                    AnimatedNavHost(
                         navController = navController,
-                        startDestination = "home"
+                        startDestination = "home",
                     ) {
-                        composable("home") {
+                        composable("home"
+                        ) {
                             HomeScreen(navController)
                         }
-                        composable("course/{slug}") {
+                        composable("course/{slug}?title={title}",
+                            enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it/1 }) },
+                            exitTransition = {  slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it/1}) }
+                        ) {
                             val slug = it.arguments?.getString("slug")!!
-                            CourseScreen(slug = slug, navController)
+                            val title = it.arguments?.getString("title")!!
+
+                            CourseScreen(slug = slug, title, navController)
                         }
                     }
-
-
                 }
             }
         }

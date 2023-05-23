@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +45,9 @@ import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.nanotricks.techysaw.R
 import com.nanotricks.techysaw.data.model.Course
+import com.nanotricks.techysaw.ui.common.RandomColors
 import com.nanotricks.techysaw.ui.home.components.CourseSearch
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeUiState
 import com.nanotricks.techysaw.ui.home.viewmodel.HomeViewModel
@@ -61,7 +64,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val searchCourse = remember { mutableStateOf("") }
-    Scaffold(bottomBar = { BottomBar() }, content = {
+    Scaffold(content = {
         Surface(
             modifier = Modifier.padding(it),
             color = MaterialTheme.colorScheme.background.copy(alpha = 0.1F)
@@ -195,7 +198,7 @@ fun HomeBody(viewModel: HomeViewModel, navController: NavHostController) {
                 LottieAnimation(composition = searchNotFound,)
             } else {
                 CourseList(uiState = viewModel.uiState, onClick = {
-                    navController.navigate("course/${it.slug}") {
+                    navController.navigate("course/${it.slug}?title=${it.title}") {
                         this.launchSingleTop = true
                     }
                 })
@@ -273,15 +276,18 @@ private fun CourseList(
     }
 }
 
+val randomColors = RandomColors()
+
 @Composable
 private fun CourseItem(
     index: Int,
     course: Course,
     modifier: Modifier = Modifier
 ) {
+    println("Random colors ${randomColors.courseColors}")
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = primaryColor.copy(alpha = 0.15f),
+            containerColor = Color(randomColors.courseColors[index]).copy(alpha = 0.15f),
         ),
         shape = RoundedCornerShape(25.dp),
         modifier = modifier
@@ -301,15 +307,19 @@ private fun CourseItem(
                 textAlign = TextAlign.Justify
             )
             Spacer(modifier = Modifier.height(24.dp))
+            val catImage = when(course.slug) {
+                "python" -> R.drawable.ic_pythong
+                "css" -> R.drawable.ic_css
+                else -> R.drawable.ic_lesson_count
+            }
             Image(
-                imageVector = Icons.Default.Favorite,
+                painter = painterResource(id = catImage),
                 contentDescription = "sample image",
-                Modifier.fillMaxSize()
+                Modifier.fillMaxSize().background(Color.Transparent)
             )
         }
 
     }
-
 }
 
 data class NavigationMenu(

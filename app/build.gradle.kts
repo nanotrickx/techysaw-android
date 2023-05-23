@@ -34,19 +34,21 @@ android {
 
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
+    }
+
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
-    }
+
 
 //    @Suppress("UNUSED_EXPRESSION")
 //    fun Packaging.() {
@@ -54,7 +56,9 @@ android {
 //            excludes += "/META-INF/{AL2.0,LGPL2.1}"
 //        }
 //    }
-
+    configurations.all {
+        resolutionStrategy.force("androidx.compose.animation:animation:1.4.0")
+    }
     androidComponents {
         onVariants {
             it.buildConfigFields.put(
@@ -106,6 +110,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")// For Hilt"s nav-scoped VMs
 

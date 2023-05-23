@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,7 +53,7 @@ import com.nanotricks.techysaw.util.ScreenSize
 
 @Composable
 fun CourseScreen(
-    slug: String, navController: NavHostController,
+    slug: String, title: String, navController: NavHostController,
     viewModel: CourseViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -68,19 +69,23 @@ fun CourseScreen(
             Modifier
                 .background(Color.Gray.copy(alpha = 0.05F))
         ) {
-            Row(
+            Box(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                /*verticalAlignment = Alignment.CenterVertically*/
             ) {
-                BackButton {
-                    navController.popBackStack()
+                Box(modifier = Modifier.align(Alignment.CenterStart)) {
+                    BackButton {
+                        navController.popBackStack()
+                    }
                 }
-                Text(
-                    slug,
-                    style = MaterialTheme.typography.displayLarge,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
+                Box(modifier = Modifier.align(Alignment.Center)) {
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.displayLarge,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(12.dp))
             when (viewModel.uiState.state) {
@@ -158,8 +163,13 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = course.description, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Icon(Icons.Default.AccountBox, "")
+            Row(Modifier.height(35.dp), verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_lesson_count), "",
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(25.dp)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "${course.chapter.size}",
@@ -173,9 +183,9 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
         LazyColumn {
             items(course.chapter) {
                 ChapterListItem(chapter = it) { selectedChapter ->
-                   viewModel.updateReadStatus(course, selectedChapter)
+                    viewModel.updateReadStatus(course, selectedChapter)
                     val intent = Intent(context, ChapterActivity::class.java)
-                    intent.putExtra(Constants.INTENT_CHAPTER_DATA,selectedChapter)
+                    intent.putExtra(Constants.INTENT_CHAPTER_DATA, selectedChapter)
                     context.startActivity(intent)
                 }
             }
@@ -226,7 +236,10 @@ fun ChapterListItem(chapter: Chapter, onChapterClicked: (Chapter) -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = chapter.chapterTitle, style = MaterialTheme.typography.displayMedium)
+                    Text(
+                        text = chapter.chapterTitle,
+                        style = MaterialTheme.typography.displayMedium
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = chapter.chapterTitle, style = MaterialTheme.typography.displaySmall)
                 }
