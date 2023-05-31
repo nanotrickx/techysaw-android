@@ -1,19 +1,21 @@
 //import com.android.build.api.dsl.Packaging
 //import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import com.android.build.api.variant.BuildConfigField
+import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
 
 plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
     compileSdk = 33
-    namespace = "com.nanotricks.techysaw"
+    namespace = "com.vijanthi.computervathiyar"
     defaultConfig {
-        applicationId = "com.nanotricks.techysaw"
+        applicationId = "com.vijanthi.computervathiyar"
         minSdk = 25
         targetSdk = 33
         versionCode = 1
@@ -44,7 +46,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.0"
     }
-
+    viewBinding.enable = true
     buildFeatures {
         compose = true
     }
@@ -114,13 +116,17 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")// For Hilt"s nav-scoped VMs
 
-
     // Networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
     //gms
     implementation("com.google.android.gms:play-services-auth:20.5.0")
+    // ads
+//    implementation("com.google.android.gms:play-services-ads:22.1.0")
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.1.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     val room_version = "2.5.1"
 //    val room_version = "2.6.0-alpha01"

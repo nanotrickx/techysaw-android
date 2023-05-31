@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".Techysaw"
+        android:name="com.vijanthi.computervathiyar.ComputerVathiyar"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
@@ -15,12 +15,12 @@
         android:theme="@style/Theme.Techysaw"
         tools:targetApi="31">
         <activity
-            android:name=".ui.chapter.ChapterActivity"
+            android:name="com.vijanthi.computervathiyar.ui.chapter.ChapterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.vijanthi.computervathiyar.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Techysaw">
             <intent-filter>
@@ -29,6 +29,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+<!--        ca-app-pub-3940256099942544/5224354917-->
+<!--        ca-app-pub-2779001057517856/1402100361-->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="ca-app-pub-2779001057517856/1402100361"/>-->
+
     </application>
 
 </manifest>
