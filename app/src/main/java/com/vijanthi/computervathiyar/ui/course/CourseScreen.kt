@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +44,8 @@ import com.vijanthi.computervathiyar.data.model.Chapter
 import com.vijanthi.computervathiyar.data.model.Course
 import com.vijanthi.computervathiyar.ui.chapter.ChapterActivity
 import com.vijanthi.computervathiyar.ui.common.BackButton
+import com.vijanthi.computervathiyar.ui.course.components.ChapterImageRead
+import com.vijanthi.computervathiyar.ui.course.components.ChapterImageUnread
 import com.vijanthi.computervathiyar.ui.course.viewmodel.CourseUiState
 import com.vijanthi.computervathiyar.ui.course.viewmodel.CourseViewModel
 import com.vijanthi.computervathiyar.util.Constants
@@ -176,10 +179,12 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
         }
         Spacer(modifier = Modifier.height(10.dp))
         LazyColumn(
-            modifier = Modifier.padding(bottom = 12.dp).fillMaxHeight()
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+                .fillMaxHeight()
         ) {
             items(course.chapter) {
-                ChapterListItem(chapter = it) { selectedChapter ->
+                ChapterListItem(course.title, chapter = it) { selectedChapter ->
                     viewModel.updateReadStatus(course, selectedChapter)
                     val intent = Intent(context, ChapterActivity::class.java)
                     intent.putExtra(Constants.INTENT_CHAPTER_DATA, selectedChapter)
@@ -192,20 +197,25 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChapterListItem(chapter: Chapter, onChapterClicked: (Chapter) -> Unit) {
+fun ChapterListItem(courseTitle: String, chapter: Chapter, onChapterClicked: (Chapter) -> Unit) {
 
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
         shape = CircleShape.copy(CornerSize(12.dp)),
-        modifier = Modifier.padding(top = 6.dp, start = 12.dp, end = 12.dp, bottom = 2.dp).shadow(
-            ambientColor = Color.Gray.copy(alpha = 0.1f),
-            elevation = 10.dp,
-            clip = false,
-            spotColor = Color.Gray.copy(alpha = 0.2f)
-        ),
-        onClick = { onChapterClicked(chapter) },
+        modifier = Modifier
+            .padding(top = 6.dp, start = 12.dp, end = 12.dp, bottom = 2.dp)
+            .shadow(
+                ambientColor = Color.Gray.copy(alpha = 0.1f),
+                elevation = 10.dp,
+                clip = false,
+                spotColor = Color.Gray.copy(alpha = 0.2f)
+            ),
+        onClick = {
+            chapter.courseTitle = courseTitle
+            onChapterClicked(chapter)
+                  },
         elevation = CardDefaults.cardElevation(
             defaultElevation = 3.dp
         ),
@@ -229,23 +239,20 @@ fun ChapterListItem(chapter: Chapter, onChapterClicked: (Chapter) -> Unit) {
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
-                        Image(
-                            painter = painterResource(id = if (chapter.isRead) R.drawable.ic_check_blue else R.drawable.ic_check_grey),
-                            modifier = Modifier.size(30.dp),
-                            contentDescription = ""
-                        )
+                        if (chapter.isRead)
+                            ChapterImageRead()
+                        else
+                            ChapterImageUnread()
                     }
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)) {
+                    .fillMaxSize()
+                    .padding(vertical = 6.dp), verticalArrangement = Arrangement.Center) {
                     Text(
                         text = chapter.chapterTitle,
-                        style = MaterialTheme.typography.displayMedium
+                        style = MaterialTheme.typography.displaySmall
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = chapter.chapterTitle, style = MaterialTheme.typography.displaySmall)
                 }
             }
         }

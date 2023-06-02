@@ -1,6 +1,7 @@
 package com.vijanthi.computervathiyar.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -14,9 +15,11 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.android.gms.ads.MobileAds
 import com.vijanthi.computervathiyar.ui.course.CourseScreen
 import com.vijanthi.computervathiyar.ui.home.HomeScreen
 import com.vijanthi.computervathiyar.ui.theme.TechysawTheme
+import com.vijanthi.computervathiyar.util.TAG
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,6 +59,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+        MobileAds.initialize(
+            this
+        ) {
+            Log.d(TAG, "onCreate() called ${it.adapterStatusMap["com.google.android.gms.ads.MobileAds"]?.description}")
         }
     }
 }

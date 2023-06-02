@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
@@ -24,8 +25,8 @@ fun BackButton(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier.padding(vertical = 10.dp, horizontal = 8.dp).background(
-            Color.White, shape = CircleShape.copy(CornerSize(16.dp))
-        ).border(
+            Color.White, shape = CircleShape.copy(CornerSize(8.dp))
+        ).size(32.dp).border(
             BorderStroke(1.dp, Color.Gray.copy(alpha = 0.2f)),shape = CircleShape.copy(
                 CornerSize(8.dp)
             )).clickable {

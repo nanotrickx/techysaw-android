@@ -18,7 +18,7 @@ class PrefManager @Inject constructor(@ApplicationContext val applicationContext
 
     private val preference: SharedPreferences by lazy {
         applicationContext.getSharedPreferences(
-            "_preferenceNameStr",
+            "computer_vathiyar",
             Context.MODE_PRIVATE
         )
     }

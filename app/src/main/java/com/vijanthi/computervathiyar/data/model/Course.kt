@@ -32,5 +32,6 @@ data class Chapter(
     @SerializedName("updatedAt") var updatedAt: String? = null,
     @SerializedName("courseId") var courseId: String,
     @SerializedName("fileUrl") var fileUrl: String,
+    @SerializedName("courseTitle") var courseTitle: String? = null,
     var isRead: Boolean = false
 ) : Serializable

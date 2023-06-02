@@ -9,6 +9,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -21,9 +22,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -123,7 +121,7 @@ dependencies {
     //gms
     implementation("com.google.android.gms:play-services-auth:20.5.0")
     // ads
-//    implementation("com.google.android.gms:play-services-ads:22.1.0")
+    implementation("com.google.android.gms:play-services-ads:22.1.0")
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.1.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")

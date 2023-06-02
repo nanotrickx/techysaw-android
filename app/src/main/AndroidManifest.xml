@@ -32,9 +32,9 @@
 
 <!--        ca-app-pub-3940256099942544/5224354917-->
 <!--        ca-app-pub-2779001057517856/1402100361-->
-<!--        <meta-data-->
-<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
-<!--            android:value="ca-app-pub-2779001057517856/1402100361"/>-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8740059452952570~3434588522"/>
 
     </application>
 
