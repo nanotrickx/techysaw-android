@@ -64,7 +64,8 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loader_view"
             android:layout_width="wrap_content"
-            android:layout_height="180dp"
+            android:layout_height="120dp"
+            android:paddingHorizontal="80dp"
             android:scaleType="centerCrop"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
@@ -73,11 +74,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/tt_norms_pro_light"
-            android:text="Loading..."
+            android:text="Please wait...\n While I thumb through the course."
             android:textAlignment="center"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
