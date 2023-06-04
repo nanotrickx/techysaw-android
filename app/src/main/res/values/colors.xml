@@ -2,9 +2,14 @@
 <resources>
     <color name="primary_orange">#FFFF6600</color>
     <color name="primary_blue">#2581dd</color>
+
+    <color name="primary_orange_bt">#90FF6600</color>
+    <color name="primary_blue_bt">#702581dd</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#C0C0C0</color>
     <color name="background">#9FFFFFFF</color>
     <color name="toolbar_color">#FFFFFF</color>
+    <color name="gradient_ad">#D0FFFFFF</color>
+    <color name="gradient_ad_middle">#F0FFFFFF</color>
 </resources>

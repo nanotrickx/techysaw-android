@@ -150,6 +150,8 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
         ) {
             Image(painterResource(id = R.drawable.ic_pythong),"", modifier = Modifier.align(Alignment.CenterHorizontally))
         }
+//        Image -> logos, Editor js 
+//
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

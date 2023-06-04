@@ -12,35 +12,35 @@
         android:id="@+id/back_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:contentDescription="@string/back"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="12dp"
-        android:src="@drawable/ic_back_arrow"
+        android:layout_marginTop="12dp"
+        android:background="?selectableItemBackground"
         android:backgroundTint="@color/white"
+        android:contentDescription="@string/back"
+        android:src="@drawable/ic_back_arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/chapter_title"
+        android:id="@+id/course_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Python"
-        android:textSize="24sp"
         android:fontFamily="@font/tt_norms_pro_bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/back_bt"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@id/back_bt"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/back_bt"
+        tools:text="Python" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="6dp"
+        android:visibility="gone"
         android:fontFamily="@font/tt_norms_pro_medium"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,8 +54,8 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="6dp"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,12 +73,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Loading..."
             android:layout_marginTop="8dp"
-            android:textSize="18sp"
-            android:textAlignment="center"
             android:fontFamily="@font/tt_norms_pro_light"
-            />
+            android:text="Loading..."
+            android:textAlignment="center"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -92,5 +91,65 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <LinearLayout
+        android:id="@+id/ad_limit_exceed_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
+        android:gravity="bottom|center|center_horizontal"
+        android:paddingHorizontal="20dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@drawable/ad_limit_exceed_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="wrap_content"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:layout_marginBottom="20dp"
+            app:lottie_rawRes="@raw/road_end" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your read limit is exceeded"
+            android:textAlignment="center"
+            android:fontFamily="@font/tt_norms_pro_extrabold"
+            android:textSize="28sp"
+            android:letterSpacing=".10"
+            android:layout_marginBottom="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Watch ad to continue reading"
+            android:fontFamily="@font/tt_norms_pro_medium"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:letterSpacing=".10"
+            android:layout_marginBottom="30dp"
+            />
+
+        <Button
+            android:id="@+id/watch_ad_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="watch now"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="60dp"
+            android:fontFamily="@font/tt_norms_pro_regular"
+            android:letterSpacing="0.1"
+            android:background="@drawable/watch_ad_bg"  />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

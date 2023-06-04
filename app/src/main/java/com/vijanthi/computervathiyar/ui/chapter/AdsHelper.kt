@@ -1,8 +1,6 @@
 package com.vijanthi.computervathiyar.ui.chapter
 
 import android.app.Activity
-import android.content.Context
-import android.opengl.Visibility
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -13,20 +11,16 @@ import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnUserEarnedRewardListener
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.vijanthi.computervathiyar.data.model.AdViewReport
 import com.vijanthi.computervathiyar.databinding.ActivityChapterBinding
-import com.vijanthi.computervathiyar.util.Constants
 import com.vijanthi.computervathiyar.util.PrefManager
 import com.vijanthi.computervathiyar.util.TAG
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class AdsHelper(
@@ -60,29 +54,40 @@ class AdsHelper(
 
         awaitClose { cancel() }
     }
-    fun init() {
+    fun initAd() {
         Log.d(TAG, "init() called")
         lifecycleScope.launch {
             setupAds().collectLatest {
                 Log.d(TAG, "setupAds() called isSuccess $it")
-                if (it) {
-                    val avr = prefManger.adViewReport
-                    if (avr == null || avr.adViewProvision == 0) {
-                        showAd()
-                    } else {
-                        avr.adViewProvision--
-                        prefManger.adViewReport = avr
-                        showChapter()
-                    }
+                if (it) setupAdCallback()
+                val avr = prefManger.adViewReport
+                if (avr == null || avr.adViewProvision == 0) {
+                    showReadLimitReached()
+                } else {
+                    avr.adViewProvision--
+                    prefManger.adViewReport = avr
+                    showChapter()
                 }
             }
         }
     }
 
-    fun showAd() {
+    private fun showReadLimitReached() {
+        Log.d(TAG, "showReadLimitReached() called")
+        binding.apply {
+            lessonRv.apply {
+                isNestedScrollingEnabled = false;
+                suppressLayout(true)
+                visibility = View.VISIBLE
+            }
+            loaderContainer.visibility = View.GONE
+            adLimitExceedContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupAdCallback() {
         Log.d(TAG, "showAd() called")
-        rewardedAd?.fullScreenContentCallback =
-            object : FullScreenContentCallback() {
+        rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     Log.d(TAG, "Ad was dismissed.")
                     rewardedAd = null
@@ -100,26 +105,39 @@ class AdsHelper(
                     // Called when ad is dismissed.
                 }
             }
-
-        rewardedAd?.show(context) { rewardItem ->
-            // Handle the reward.
-            val rewardAmount = rewardItem.amount
-            val rewardType = rewardItem.type
-            Log.d("TAG", "User earned the reward. $rewardAmount $rewardType")
-            prefManger.adViewReport = AdViewReport(lastAdViewTime = System.currentTimeMillis(), 2)
-            Toast.makeText(context, "Chapter provision enabled", Toast.LENGTH_LONG).show()
-            showChapter()
-        }
     }
 
     private fun showChapter() {
-        binding.loaderContainer.visibility = View.GONE
-        binding.lessonRv.visibility = View.VISIBLE
+        binding.apply {
+            adLimitExceedContainer.visibility = View.GONE
+            loaderContainer.visibility = View.GONE
+            lessonRv.apply {
+                visibility = View.VISIBLE
+                isNestedScrollingEnabled = true
+                suppressLayout(false)
+            }
+        }
     }
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
         Log.d(TAG, "onCreate() called with: owner = $owner")
+        binding.watchAdBt.setOnClickListener {
+            if (rewardedAd == null) {
+                Toast.makeText(context, "Ad not yet ready", Toast.LENGTH_SHORT).show()
+                initAd()
+                return@setOnClickListener
+            }
+            rewardedAd?.show(context) { rewardItem ->
+                // Handle the reward.
+                val rewardAmount = rewardItem.amount
+                val rewardType = rewardItem.type
+                Log.d("TAG", "User earned the reward. $rewardAmount $rewardType")
+                prefManger.adViewReport = AdViewReport(lastAdViewTime = System.currentTimeMillis(), 2)
+                Toast.makeText(context, "Chapter read provisioned", Toast.LENGTH_LONG).show()
+                showChapter()
+            }
+        }
     }
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)

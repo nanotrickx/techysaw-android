@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.vijanthi.computervathiyar.R
 import com.vijanthi.computervathiyar.data.model.Chapter
 import com.vijanthi.computervathiyar.data.model.EJResponse
 import com.vijanthi.computervathiyar.databinding.ActivityChapterBinding
@@ -22,7 +21,11 @@ import com.vijanthi.computervathiyar.util.PrefManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import work.upstarts.editorjskit.models.EJAbstractBlockType
 import work.upstarts.editorjskit.models.EJBlock
+import work.upstarts.editorjskit.models.EJBlockType
+import work.upstarts.editorjskit.models.EJHeaderBlock
+import work.upstarts.editorjskit.models.data.EJHeaderData
 import work.upstarts.editorjskit.ui.EditorJsAdapter
 import work.upstarts.editorjskit.ui.theme.EJStyle
 import work.upstarts.gsonparser.EJDeserializer
@@ -45,11 +48,12 @@ class ChapterActivity : AppCompatActivity() {
     @Inject
     lateinit var prefManger: PrefManager
 
-    private val adsHelper by lazy { 
+    private val adsHelper by lazy {
         AdsHelper(this@ChapterActivity, binding, viewModel, lifecycleScope, prefManger)
     }
 
     lateinit var chapterData: EJResponse
+    val chapterBlocks = mutableListOf<EJBlock>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,19 +61,26 @@ class ChapterActivity : AppCompatActivity() {
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         val data = intent.getSerializableExtra(Constants.INTENT_CHAPTER_DATA) as Chapter?
         if (data != null) {
-            lifecycle.addObserver(adsHelper)
-            subscribeObserver()
-            fetchData(data)
-            binding.apply {
-                chapterTitle.text = data.courseTitle
-                title.text = data.chapterTitle
-                backBt.setOnClickListener { onBackPressed() }
-            }
-            setupRecyclerView()
-            adsHelper.init()
+            doOperation(data)
         } else {
             Log.e("ChapterAct", "onCreate: Failed data not found ${intent.data}")
         }
+    }
+
+    private fun doOperation(data: Chapter) {
+        lifecycle.addObserver(adsHelper)
+        subscribeObserver()
+        fetchData(data)
+        binding.apply {
+            courseTitle.text = data.courseTitle
+            backBt.setOnClickListener { onBackPressed() }
+        }
+        chapterBlocks.add(
+            EJHeaderBlock(data = EJHeaderData(data.chapterTitle, 1), type = EJBlockType.HEADER)
+        )
+
+        setupRecyclerView()
+        adsHelper.initAd()
     }
 
     private fun setupRecyclerView() {
@@ -78,7 +89,6 @@ class ChapterActivity : AppCompatActivity() {
         binding.lessonRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -90,18 +100,21 @@ class ChapterActivity : AppCompatActivity() {
     private fun subscribeObserver() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.state.collect {
-                when(it) {
+                when (it) {
                     is ChapterViewModel.ChapterUiState.ChapterDataReceived -> {
-                        val md = gson.fromJson(it.chapterData.data, EJResponse::class.java)
-                        chapterData = md
+                        val md = gson.fromJson(it.chapterData.data, EJResponse::class.java).blocks
+                        chapterBlocks.addAll(md)
                         onChapterDataReceived()
                     }
+
                     is ChapterViewModel.ChapterUiState.Error -> {
                         Toast.makeText(applicationContext, it.error, Toast.LENGTH_SHORT).show()
                     }
+
                     ChapterViewModel.ChapterUiState.Loading -> {
 
                     }
+
                     else -> {}
                 }
             }
@@ -109,7 +122,7 @@ class ChapterActivity : AppCompatActivity() {
     }
 
     private fun onChapterDataReceived() {
-        rvAdapter.items = chapterData.blocks
+        rvAdapter.items = chapterBlocks.toList()
         rvAdapter.notifyDataSetChanged()
     }
 
