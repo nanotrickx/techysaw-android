@@ -1,5 +1,7 @@
 //import com.android.build.api.dsl.Packaging
 //import org.jetbrains.kotlin.config.KotlinCompilerVersion
+@file:Suppress("UnstableApiUsage")
+
 import com.android.build.api.variant.BuildConfigField
 import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
 
@@ -72,6 +74,28 @@ android {
     kapt {
         correctErrorTypes = true
     }
+
+    signingConfigs {
+        create("computervathiyar") {
+            storeFile = File("/mnt/work/Projects/Netstar/SerialComm/ComputerVathiyar/app/keystore/computer-vathiyar.jks")
+            storePassword = "vathiyar"
+            keyPassword = "vathiyar"
+            keyAlias = "ComputerVathiyar"
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            signingConfig = signingConfigs.getByName("computervathiyar")
+        }
+        debug {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            signingConfig = signingConfigs.getByName("computervathiyar")
+        }
+    }
 }
 
 dependencies {
@@ -125,6 +149,8 @@ dependencies {
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.1.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
 
     val room_version = "2.5.1"
 //    val room_version = "2.6.0-alpha01"

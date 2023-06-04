@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.vijanthi.computervathiyar.data.model.AdViewReport
+import com.vijanthi.computervathiyar.data.model.LocalLoginData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -12,8 +13,9 @@ import javax.inject.Singleton
 @Singleton
 class PrefManager @Inject constructor(@ApplicationContext val applicationContext: Context) {
 
-    private var prefCourseRead: String = "course_chapter_read"
-    private var prefAdViewReport: String = "ad_view_report"
+    private val prefCourseRead: String = "course_chapter_read"
+    private val prefAdViewReport: String = "ad_view_report"
+    private val  prefLoginData: String ="login_data"
     private val gson by lazy { Gson() }
 
     private val preference: SharedPreferences by lazy {
@@ -69,5 +71,17 @@ class PrefManager @Inject constructor(@ApplicationContext val applicationContext
         }
         set(value) {
             putString(prefAdViewReport, if (value == null)  "" else gson.toJson(value))
+        }
+
+    var loginData: LocalLoginData?
+        get() {
+            val avr = preference.getString(prefLoginData, "")
+            if (avr.isNullOrEmpty()) {
+                return null
+            }
+            return gson.fromJson<LocalLoginData>(avr)
+        }
+        set(value) {
+            putString(prefLoginData, if (value == null)  "" else gson.toJson(value))
         }
 }

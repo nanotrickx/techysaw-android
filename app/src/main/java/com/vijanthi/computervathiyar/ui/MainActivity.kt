@@ -18,6 +18,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.gms.ads.MobileAds
 import com.vijanthi.computervathiyar.ui.course.CourseScreen
 import com.vijanthi.computervathiyar.ui.home.HomeScreen
+import com.vijanthi.computervathiyar.ui.login.LoginScreen
 import com.vijanthi.computervathiyar.ui.theme.TechysawTheme
 import com.vijanthi.computervathiyar.util.TAG
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,8 +42,12 @@ class MainActivity : ComponentActivity() {
 
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = "home",
+                        startDestination = "login",
                     ) {
+                        composable("login"
+                        ) {
+                            LoginScreen(navController)
+                        }
                         composable("home"
                         ) {
                             HomeScreen(navController)
