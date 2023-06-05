@@ -12,4 +12,6 @@
     <color name="toolbar_color">#FFFFFF</color>
     <color name="gradient_ad">#D0FFFFFF</color>
     <color name="gradient_ad_middle">#F0FFFFFF</color>
+
+    <color name="editor_paragraph">#8B8A8A</color>
 </resources>

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.vijanthi.computervathiyar.data.db.dao.CourseDao
 import com.vijanthi.computervathiyar.data.model.Chapter
 import com.vijanthi.computervathiyar.data.model.EJResponse
 import com.vijanthi.computervathiyar.databinding.ActivityChapterBinding
@@ -21,7 +22,6 @@ import com.vijanthi.computervathiyar.util.PrefManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import work.upstarts.editorjskit.models.EJAbstractBlockType
 import work.upstarts.editorjskit.models.EJBlock
 import work.upstarts.editorjskit.models.EJBlockType
 import work.upstarts.editorjskit.models.EJHeaderBlock
@@ -48,9 +48,10 @@ class ChapterActivity : AppCompatActivity() {
     @Inject
     lateinit var prefManger: PrefManager
 
-    private val adsHelper by lazy {
-        AdsHelper(this@ChapterActivity, binding, viewModel, lifecycleScope, prefManger)
-    }
+    @Inject
+    lateinit var courseDao: CourseDao
+
+    lateinit var adsHelper: AdsHelper
 
     lateinit var chapterData: EJResponse
     val chapterBlocks = mutableListOf<EJBlock>()
@@ -61,6 +62,7 @@ class ChapterActivity : AppCompatActivity() {
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         val data = intent.getSerializableExtra(Constants.INTENT_CHAPTER_DATA) as Chapter?
         if (data != null) {
+            adsHelper = AdsHelper(this@ChapterActivity, binding, viewModel, lifecycleScope, prefManger, courseDao, data!!)
             doOperation(data)
         } else {
             Log.e("ChapterAct", "onCreate: Failed data not found ${intent.data}")

@@ -4,4 +4,7 @@
     <style name="Theme.Techysaw" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/primary_blue</item>
     </style>
+    <style name="ParagraphText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/editor_paragraph</item>
+    </style>
 </resources>

@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Singleton
 class ChapterRepository @Inject constructor(
     private val remoteSource: ChapterRemoteSource,
-    private val localSource: ChapterLocalSource
+    private val localSource: ChapterLocalSource,
 ) {
     fun getChapterData(chapter: Chapter) = flow {
         // Use the local cached copy if not forcing
@@ -33,6 +33,7 @@ class ChapterRepository @Inject constructor(
             is Resource.Success -> {
 
                 localSource.saveChapter(chapter, Gson().toJson(resource.data))
+
                 emit(
                     Resource.Success(ChapterData(chapter.slug!!, data = Gson().toJson(resource.data)))
                 )

@@ -6,16 +6,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.vijanthi.computervathiyar.ui.course.CourseScreen
 import com.vijanthi.computervathiyar.ui.home.HomeScreen
 import com.vijanthi.computervathiyar.ui.login.LoginScreen
@@ -37,14 +45,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val user by remember { mutableStateOf(Firebase.auth.currentUser) }
 
                     val navController = rememberAnimatedNavController()
 
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = "login",
+                        startDestination = if(user != null) "login" else "login",
                     ) {
-                        composable("login"
+                        composable("login",
+                            enterTransition = { fadeIn(animationSpec = tween(1500)) },
+                            exitTransition = {  fadeOut(animationSpec = tween(1500)) }
                         ) {
                             LoginScreen(navController)
                         }

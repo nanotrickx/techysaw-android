@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey
 @Entity("course_read_status")
 data class CourseReadStatus(
     @PrimaryKey
-    val courseId: String,
-    val readList: ArrayList<String>
+    val slug: String,
+    val courseId: String ,
+    val readTime: Long= System.currentTimeMillis(),
+    var readCount: Int = 1
 )

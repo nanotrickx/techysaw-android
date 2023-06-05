@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.sharp.Notifications
 import androidx.compose.material.icons.sharp.Star
@@ -32,25 +33,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.vijanthi.computervathiyar.R
 import com.vijanthi.computervathiyar.data.model.Course
 import com.vijanthi.computervathiyar.ui.common.RandomColors
 import com.vijanthi.computervathiyar.ui.home.components.CourseSearch
 import com.vijanthi.computervathiyar.ui.home.viewmodel.HomeUiState
 import com.vijanthi.computervathiyar.ui.home.viewmodel.HomeViewModel
+import com.vijanthi.computervathiyar.ui.theme.gradientLoginMiddleBefore
 import com.vijanthi.computervathiyar.ui.theme.gradientMiddle
 import com.vijanthi.computervathiyar.ui.theme.gradientStart
 import com.vijanthi.computervathiyar.ui.theme.primaryColor
@@ -63,6 +77,8 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+
+
     val searchCourse = remember { mutableStateOf("") }
     Scaffold(content = {
         Surface(
@@ -84,7 +100,9 @@ fun HomeScreen(
 @Composable
 fun HomeSearchSection(onSearchChange: (String) -> Unit = {}) {
     val ss = ScreenSize()
-    val listColors = listOf(gradientStart, gradientMiddle , primaryColor)
+    val listColors = listOf(gradientStart, gradientMiddle, primaryColor)
+    var user by remember { mutableStateOf(Firebase.auth.currentUser) }
+
     Card(
         shape = RoundedCornerShape(25.dp),
         modifier = Modifier
@@ -92,9 +110,11 @@ fun HomeSearchSection(onSearchChange: (String) -> Unit = {}) {
             .height(ss.heightOf(by = 4).dp)
             .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listColors))) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Brush.linearGradient(listColors))
+        ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -103,20 +123,31 @@ fun HomeSearchSection(onSearchChange: (String) -> Unit = {}) {
                     .padding(top = 30.dp, start = 24.dp, end = 18.dp)
             ) {
                 Column {
+                    Text(buildAnnotatedString {
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = primaryColor2,
+                                fontSize = 22.sp
+                            )
+                        ) {
+                            append("H")
+                        }
+                        withStyle(style = SpanStyle(color = Color.White, fontSize = 22.sp)) {
+                            append("ello, ")
+                        }
+                    })
                     Text(
-                        text = "Hello,",
-                        style = MaterialTheme.typography.displayLarge,
-                        color = MaterialTheme.colorScheme.surface
-                    )
-                    Text(
-                        text = "Good Morning",
-                        style = MaterialTheme.typography.displaySmall,
-                        color = MaterialTheme.colorScheme.surface
+                        text = user?.displayName ?: "World",
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.surface,
+                        fontSize = 32.sp
                     )
                 }
                 OutlinedButton(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.size(40.dp),  //avoid the oval shape
+                    modifier = Modifier.size(50.dp),  //avoid the oval shape
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),  //avoid the little icon
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -124,7 +155,19 @@ fun HomeSearchSection(onSearchChange: (String) -> Unit = {}) {
                         containerColor = Color.White
                     )
                 ) {
-                    Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                    if (user != null) {
+                        SubcomposeAsyncImage(
+                            model = user!!.photoUrl,
+                            contentScale = ContentScale.Fit,
+                            loading = {
+                                CircularProgressIndicator()
+                            }, modifier = Modifier
+                                .clip(CircleShape)
+                                .size(49.dp),
+                            contentDescription = stringResource(R.string.person)
+                        )
+                    } else
+                        Icon(Icons.Default.Person, contentDescription = "Notifications")
                 }
             }
 
@@ -187,15 +230,22 @@ fun HomeBody(viewModel: HomeViewModel, navController: NavHostController) {
         HomeUiState.State.LoadingMoreError -> {}
         HomeUiState.State.Success -> {
             if (viewModel.uiState.courseList.isEmpty()) {
-                LottieAnimation(composition = searchNotFound,)
+                LottieAnimation(composition = searchNotFound)
             } else {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 14.dp)
                 ) {
-                    Text("Categories", style = MaterialTheme.typography.displayMedium, fontSize = 22.sp)
-                    Text("Total - ${viewModel.uiState.courseList.size}", style = MaterialTheme.typography.displaySmall)
+                    Text(
+                        "Categories",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontSize = 22.sp
+                    )
+                    Text(
+                        "Total - ${viewModel.uiState.courseList.size}",
+                        style = MaterialTheme.typography.displaySmall
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 CourseList(uiState = viewModel.uiState, onClick = {
@@ -308,7 +358,7 @@ private fun CourseItem(
                 textAlign = TextAlign.Justify
             )
             Spacer(modifier = Modifier.height(24.dp))
-            val catImage = when(course.slug) {
+            val catImage = when (course.slug) {
                 "python" -> R.drawable.ic_pythong
                 "css" -> R.drawable.ic_css
                 else -> R.drawable.ic_lesson_count
@@ -316,7 +366,9 @@ private fun CourseItem(
             Image(
                 painter = painterResource(id = catImage),
                 contentDescription = "sample image",
-                Modifier.fillMaxSize().background(Color.Transparent)
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Transparent)
             )
         }
 
@@ -327,12 +379,14 @@ data class NavigationMenu(
     val title: String,
     val icon: ImageVector
 )
+
 val menus = listOf(
     NavigationMenu("Featured", icon = Icons.Sharp.Star),
     NavigationMenu("My Course", Icons.Sharp.Notifications),
     NavigationMenu("Saved", Icons.Default.Favorite),
     NavigationMenu("Setting", Icons.Default.Settings),
 )
+
 @Composable
 fun BottomBar() {
 

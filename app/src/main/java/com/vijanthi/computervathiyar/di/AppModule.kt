@@ -3,6 +3,7 @@ package com.vijanthi.computervathiyar.di
 import android.content.Context
 import androidx.room.Room
 import com.vijanthi.computervathiyar.data.db.TechysawDb
+import com.vijanthi.computervathiyar.data.db.dao.CourseDao
 import com.vijanthi.computervathiyar.data.repository.chapter.local.ChapterLocalSource
 import com.vijanthi.computervathiyar.data.repository.chapter.local.ChapterMemorySource
 import com.vijanthi.computervathiyar.data.repository.chapter.remote.ChapterApi
@@ -56,7 +57,13 @@ object AppModule {
     @Provides
     @Singleton
     fun providesChapterLocalSource(db: TechysawDb): ChapterLocalSource {
-        return ChapterMemorySource(db.chapterDao())
+        return ChapterMemorySource(db.chapterDao(), db.courseDao())
+    }
+
+    @Provides
+    @Singleton
+    fun providesCourseDao(db: TechysawDb): CourseDao {
+        return db.courseDao()
     }
 
     @Provides

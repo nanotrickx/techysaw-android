@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun CourseSearch(onSearchChange: (String) -> Unit) {
@@ -67,7 +68,16 @@ fun CourseSearch(onSearchChange: (String) -> Unit) {
                 }
             }
         },
+        textStyle = MaterialTheme.typography.displayMedium.copy(
+            fontSize = 18.sp
+        ),
         singleLine = true,
-        placeholder = { Text(text = "Search your topic", style = MaterialTheme.typography.labelLarge, color = Color.Gray)}
+        placeholder = {
+            Text(
+                text = "Search your topic",
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp),
+                color = Color.Gray
+            )
+        }
     )
 }

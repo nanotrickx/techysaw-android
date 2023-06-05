@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Computer Vathiyar</string>
     <string name="back">back</string>
+    <string name="person">User image\n</string>
 
     <plurals name="replies">
         <item quantity="zero">%d replies</item>
