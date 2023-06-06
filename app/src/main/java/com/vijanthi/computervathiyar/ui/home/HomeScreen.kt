@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.sharp.Notifications
@@ -52,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -64,7 +62,6 @@ import com.vijanthi.computervathiyar.ui.common.RandomColors
 import com.vijanthi.computervathiyar.ui.home.components.CourseSearch
 import com.vijanthi.computervathiyar.ui.home.viewmodel.HomeUiState
 import com.vijanthi.computervathiyar.ui.home.viewmodel.HomeViewModel
-import com.vijanthi.computervathiyar.ui.theme.gradientLoginMiddleBefore
 import com.vijanthi.computervathiyar.ui.theme.gradientMiddle
 import com.vijanthi.computervathiyar.ui.theme.gradientStart
 import com.vijanthi.computervathiyar.ui.theme.primaryColor
@@ -101,7 +98,7 @@ fun HomeScreen(
 fun HomeSearchSection(onSearchChange: (String) -> Unit = {}) {
     val ss = ScreenSize()
     val listColors = listOf(gradientStart, gradientMiddle, primaryColor)
-    var user by remember { mutableStateOf(Firebase.auth.currentUser) }
+    val user by remember { mutableStateOf(Firebase.auth.currentUser) }
 
     Card(
         shape = RoundedCornerShape(25.dp),

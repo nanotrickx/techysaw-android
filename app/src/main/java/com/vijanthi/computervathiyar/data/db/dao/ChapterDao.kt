@@ -16,4 +16,7 @@ interface ChapterDao {
     @Query("SELECT * FROM chapter_data WHERE slug = :slug")
     suspend fun getChapter(slug: String): ChapterData?
 
+    @Query("DELETE FROM chapter_data")
+    suspend fun clear(): Int
+
 }

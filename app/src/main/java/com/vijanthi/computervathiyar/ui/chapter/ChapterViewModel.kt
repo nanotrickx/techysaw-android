@@ -7,6 +7,7 @@ import com.vijanthi.computervathiyar.data.model.Chapter
 import com.vijanthi.computervathiyar.data.model.Resource
 import com.vijanthi.computervathiyar.data.repository.chapter.ChapterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class ChapterViewModel @Inject constructor(
     val state: StateFlow<ChapterUiState> get() = _state
 
     fun fetchChapterData(chapter: Chapter) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             chapterRepository.getChapterData(chapter).collect {
                 when(it) {
                     is Resource.Error -> {

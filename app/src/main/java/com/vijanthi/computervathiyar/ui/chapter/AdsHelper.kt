@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 class AdsHelper(
     private val context: Activity,
     private val binding: ActivityChapterBinding,
-    private val viewModel: ChapterViewModel,
     private val lifecycleScope: LifecycleCoroutineScope,
     private val prefManger: PrefManager,
     private val courseDao: CourseDao,
@@ -67,16 +66,19 @@ class AdsHelper(
                 Log.d(TAG, "setupAds() called isSuccess $it")
                 if (it) setupAdCallback()
                 val avr = prefManger.adViewReport
-                val isChapterRead = courseDao.getCourseReadChapters(chapter.slug!!) != null
-                Log.d(TAG, "initAd() called $isChapterRead")
-                if (isChapterRead.not() && (avr?.adViewProvision == 0)) {
-                    showReadLimitReached()
+                Log.d(TAG, "initAd() called ${chapter.slug} $avr")
+                if (avr == null) {
+                    prefManger.adViewReport = AdViewReport(lastAdViewTime = System.currentTimeMillis(), 2)
+                    showChapter()
                 } else {
-                    prefManger.adViewReport = if (avr != null) {
+                    if (avr.adViewProvision == 0) {
+                        showReadLimitReached()
+                        return@collectLatest
+                    }
+                    val crc = courseDao.getCourseReadChapters(chapter.slug!!)
+                    if (crc == null || crc.readCount <= 1 || crc.readCount % 3 == 0) {
                         avr.adViewProvision--
-                        avr
-                    } else {
-                        AdViewReport(lastAdViewTime = System.currentTimeMillis(), 2)
+                        prefManger.adViewReport = avr
                     }
                     showChapter()
                 }
@@ -92,6 +94,7 @@ class AdsHelper(
                 suppressLayout(true)
                 visibility = View.VISIBLE
             }
+            lessonWv.visibility = View.VISIBLE
             loaderContainer.visibility = View.GONE
             adLimitExceedContainer.visibility = View.VISIBLE
         }
@@ -128,6 +131,7 @@ class AdsHelper(
                 isNestedScrollingEnabled = true
                 suppressLayout(false)
             }
+            lessonWv.visibility = View.VISIBLE
         }
     }
 

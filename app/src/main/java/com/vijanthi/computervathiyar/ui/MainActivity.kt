@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
 
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = if(user != null) "login" else "login",
+                        startDestination = if(user != null) "home" else "login",
                     ) {
                         composable("login",
                             enterTransition = { fadeIn(animationSpec = tween(1500)) },
