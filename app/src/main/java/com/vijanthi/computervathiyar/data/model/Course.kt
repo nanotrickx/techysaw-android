@@ -19,7 +19,9 @@ data class Course(
     @SerializedName("title")
     var title: String,
     @SerializedName("chapter")
-    var chapter: List<Chapter>
+    var chapter: List<Chapter>,
+    @SerializedName("image")
+    var image: String?
 )
 
 

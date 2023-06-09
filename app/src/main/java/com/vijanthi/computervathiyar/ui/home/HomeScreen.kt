@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
@@ -50,7 +51,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -355,18 +359,29 @@ private fun CourseItem(
                 textAlign = TextAlign.Justify
             )
             Spacer(modifier = Modifier.height(24.dp))
-            val catImage = when (course.slug) {
-                "python" -> R.drawable.ic_pythong
-                "css" -> R.drawable.ic_css
-                else -> R.drawable.ic_lesson_count
-            }
-            Image(
-                painter = painterResource(id = catImage),
-                contentDescription = "sample image",
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent)
+//            val catImage = when (course.slug) {
+//                "python" -> R.drawable.ic_pythong
+//                "css" -> R.drawable.ic_css
+//                else -> R.drawable.ic_lesson_count
+//            }
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(course.image)
+                    .fallback(R.drawable.ic_lesson_count)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = course.slug,
+                contentScale = ContentScale.Fit
             )
+//            Image(
+//                painter = painterResource(id = catImage),
+//                contentDescription = "sample image",
+//                Modifier
+//                    .fillMaxSize()
+//                    .background(Color.Transparent)
+//            )
         }
 
     }
@@ -411,35 +426,4 @@ fun BottomBar() {
                 icon = { Icon(imageVector = it.icon, contentDescription = it.title) })
         }
     }
-
-
-//    BottomNavigation(elevation = 10.dp) {
-//
-//        BottomNavigationItem(icon = {
-//            Icon(imageVector = Icons.Default.Home,"")
-//        },
-//            label = { Text(text = "Home") },
-//            selected = (selectedIndex.value == 0),
-//            onClick = {
-//                selectedIndex.value = 0
-//            })
-//
-//        BottomNavigationItem(icon = {
-//            Icon(imageVector = Icons.Default.Favorite,"")
-//        },
-//            label = { Text(text = "Favorite") },
-//            selected = (selectedIndex.value == 1),
-//            onClick = {
-//                selectedIndex.value = 1
-//            })
-//
-//        BottomNavigationItem(icon = {
-//            Icon(imageVector = Icons.Default.Person, "")
-//        },
-//            label = { Text(text = "Profile") },
-//            selected = (selectedIndex.value == 2),
-//            onClick = {
-//                selectedIndex.value = 2
-//            })
-//    }
 }

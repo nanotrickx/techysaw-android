@@ -14,7 +14,6 @@
 </html>
 <script src="https://cdn.jsdelivr.net/npm/editorjs-parser@1/build/Parser.browser.min.js"></script>
 <script type="text/javascript">
-    var tol = {"time":1685977869106,"blocks":[{"id":"Pu8-wfh1Cv","type":"header","data":{"text":"CSS Task 1","level":2}},{"id":"dOQSMqRbSM","type":"image","data":{"url":"https://vi-image-dev.s3.ap-south-1.amazonaws.com/images/04cc70fa-ab15-468f-80e3-d2b22c13d4e7.png","caption":"","withBorder":false,"withBackground":false,"stretched":false}},{"id":"Gc8o8IraAU","type":"code","data":{"code":"Testing\n\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Vijanthi Computer Institute</title>\n    <style>\n        *{\n            margin:0;\n            padding: 0;\n        }\n        \n        .container{\n            width: 100%;\n            flex-direction: row;\n            display: inline-flex;\n            justify-content: space-around;             \n            flex-wrap: wrap;            \n        }\n        h1{\n            text-align: center;\n            margin-bottom: 5px;\n        }\n        .sec_1{\n            width: 500px;\n            border: 5px solid #fec76f;\n            background-color: rgb(241, 241, 241);\n            margin-top: 50px;\n            margin-bottom: 50px;\n            padding: 10px;\n            \n        }\n        .sec_2{\n            width: 500px;\n            border: 5px solid rgb(84, 84, 84);\n            margin-top: 50px;\n            margin-bottom: 50px;\n            padding: 10px;\n        }\n        .para_1,.para_2{\n            font-size: 2vh;\n            text-align: justify;\n            padding: 10px;\n            line-height: 2;\n        }\n        \n    </style>\n</head>\n<body>\n\n<!-- www.vijanthitutorial.com -->\n\n    <div class=\"container\">\n        <div class=\"sec_1\">\n            <h1>About Me </h1>\n            <p class=\"para_1\">\n                இந்த Html and CSS Course-இல் அனைத்தையும் தெளிவாக சொல்லி கொடுக்கப்பட்டுள்ளது.Web developer-ஆக வேண்டுமென்று விருப்பம் உள்ளவர்கள் இந்த HTML-யை தேர்வு செய்து கொள்ளலாம்.மிகவும் எளிமையாக புரியும் வகையில் தமிழில் சொல்லி கொடுக்கப்பட்டுள்ளது.அனைவரும் படித்து பயன்பெறுமாறு வேண்டிக் கொள்கிறேன்.மேலும் Bootstrap ,Javascript ,Jquery  போன்றவைகளையும் நாம் இந்த course இல் படித்து பயன்பெறுவோம்.அனைத்து front end தொடர்பான டெக்னாலஜி பற்றி இந்த course இல் நாம் பார்ப்போம்.மேலும் நிறைய project-யை பற்றி நாம் இங்கே கலந்து ஆலோசிப்போம்.மேலும் எங்களுடைய Course இல் நிறைய Mini Task ஆனது மிகவும் தெளிவாக சொல்லி கொடுக்கப்பட்டுள்ளது.\n            </p>\n        </div>\n        <div class=\"sec_2\">\n            <h1>\n                HTML & CSS COURSE\n            </h1>\n            <p class=\"para_2\">\n                இந்த மூன்று Concept-களிலும் Responsive Website ஆனது செய்யப்பட்டுள்ளது. எப்படி செய்ய வேண்டுமென்று தெளிவாக சொல்லி கொடுக்கப்பட்டுள்ளது.உங்களை ஒரு நல்ல developer ஆக மாற்றுவேன்.எனக்கு அதில் முழு நம்பிக்கை உள்ளது.மேலும் நிறைய project-யை பற்றி நாம் இங்கே கலந்து ஆலோசிப்போம்.உங்களுக்கு basic இல் இருந்து அனைத்தையும் தெளிவாக கற்று கொடுப்போம்உங்களை ஒரு நல்ல developer ஆக மாற்றுவேன்.எனக்கு அதில் முழு நம்பிக்கை உள்ளது.உங்களை ஒரு நல்ல developer ஆக மாற்றுவேன்.எனக்கு அதில் முழு நம்பிக்கை உள்ளது.மேலும் நிறைய project-யை பற்றி நாம் இங்கே கலந்து ஆலோசிப்போம்.உங்களுக்கு basic இல் இருந்து அனைத்தையும் தெளிவாக கற்று கொடுப்போம்\n            </p>\n        </div>\n    </div>\n</body>\n</html>"}},{"id":"8z-lFxZJyW","type":"header","data":{"text":"output:","level":2}},{"id":"Wl9a8VyGgr","type":"image","data":{"url":"https://vi-image-dev.s3.ap-south-1.amazonaws.com/images/8bf08ed2-f1d3-4d06-aaad-fc88496d86de.PNG","caption":"","withBorder":false,"withBackground":false,"stretched":false}}],"version":"2.26.5"}
     var div = document.getElementById('editor-js');
     const customParsers = {
         customBlock: function(data, config) {
@@ -26,21 +25,18 @@
         }
     }
     const parser = new edjsParser(undefined, customParsers);
+
+
     function showChapter(data) {
-        console.log("show chapter", data)
         var parsedData;
         if (typeof data == "string") {
             parsedData = JSON.parse(data)
         } else {
             parsedData = data
         }
-        console.log("Parsed Data", parsedData)
         let html2 = parser.parse(parsedData);
-
         div.innerHTML = html2;
     }
-
-//    showChapter(tol)
 
 
 </script>

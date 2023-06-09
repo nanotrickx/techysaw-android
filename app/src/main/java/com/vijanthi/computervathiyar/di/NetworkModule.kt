@@ -21,21 +21,13 @@ object NetworkModule {
     }
 
     private val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
-    @Provides
-    fun provideTechysawApi(): TechysawApi {
-        return Retrofit.Builder()
-            .baseUrl("https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/")
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(TechysawApi::class.java)
-    }
+    private const val isDev = false
+    private val baseUrl = if(isDev) "https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/" else "https://5jg5wpfcje.execute-api.ap-south-1.amazonaws.com/production/"
 
     @Provides
     fun provideCourseApi(): CourseApi {
         return Retrofit.Builder()
-            .baseUrl("https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/")
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -45,7 +37,7 @@ object NetworkModule {
     @Provides
     fun provideChapterApi(): ChapterApi {
         return Retrofit.Builder()
-            .baseUrl("https://wtyxus64y5.execute-api.ap-south-1.amazonaws.com/dev/")
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
