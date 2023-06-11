@@ -3,7 +3,6 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.android.build.api.variant.BuildConfigField
-import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
 
 plugins {
     id("com.android.application")
@@ -151,6 +150,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.5.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     val room_version = "2.5.1"
 //    val room_version = "2.6.0-alpha01"

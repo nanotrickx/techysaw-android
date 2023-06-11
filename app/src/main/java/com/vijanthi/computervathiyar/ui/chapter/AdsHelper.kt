@@ -2,6 +2,7 @@ package com.vijanthi.computervathiyar.ui.chapter
 
 import android.app.Activity
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -38,6 +39,14 @@ class AdsHelper(
     private val isDebug = true
     private var addUnit =
         if (isDebug) "ca-app-pub-3940256099942544/5224354917" else "ca-app-pub-8740059452952570/7674868822"
+
+    private var disableScroll: Boolean = false
+
+    init {
+        binding.lessonWv.apply {
+            setOnTouchListener { _, event -> disableScroll && event.action == MotionEvent.ACTION_MOVE }
+        }
+    }
 
     // on load show add if count is zero
     private fun setupAds() = callbackFlow {
@@ -88,9 +97,10 @@ class AdsHelper(
 
     private fun showReadLimitReached() {
         Log.d(TAG, "showReadLimitReached() called")
+        disableScroll = true
         binding.apply {
             lessonRv.apply {
-                isNestedScrollingEnabled = false;
+                isNestedScrollingEnabled = false
                 suppressLayout(true)
                 visibility = View.VISIBLE
             }
@@ -133,6 +143,7 @@ class AdsHelper(
             }
             lessonWv.visibility = View.VISIBLE
         }
+        disableScroll = false
     }
 
     override fun onCreate(owner: LifecycleOwner) {
@@ -157,23 +168,4 @@ class AdsHelper(
         }
     }
 
-    override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-    }
-
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-    }
-
-    override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-        super.onStop(owner)
-    }
 }

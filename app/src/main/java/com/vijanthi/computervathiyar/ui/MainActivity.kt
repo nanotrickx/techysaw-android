@@ -16,10 +16,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.google.accompanist.navigation.animation.composable
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val splashScreen = installSplashScreen()
         setContent {
             TechysawTheme {
                 // A surface container using the 'background' color from the theme

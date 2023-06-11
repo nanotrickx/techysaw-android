@@ -1,9 +1,18 @@
 package com.vijanthi.computervathiyar.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -29,7 +38,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,9 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -86,8 +96,8 @@ fun HomeScreen(
             modifier = Modifier.padding(it),
             color = MaterialTheme.colorScheme.background.copy(alpha = 0.1F)
         ) {
-            Column() {
-                HomeSearchSection() {
+            Column {
+                HomeSearchSection {
                     searchCourse.value = it
                     viewModel.filterCourses(searchCourse.value.lowercase())
                 }
@@ -364,10 +374,11 @@ private fun CourseItem(
 //                "css" -> R.drawable.ic_css
 //                else -> R.drawable.ic_lesson_count
 //            }
+
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(course.image)
-                    .fallback(R.drawable.ic_lesson_count)
+                    .data(course.getCourseImage())
+                    .fallback(R.mipmap.ic_launcher)
                     .diskCachePolicy(CachePolicy.ENABLED)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .crossfade(true)

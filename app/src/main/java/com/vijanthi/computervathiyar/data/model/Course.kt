@@ -1,6 +1,7 @@
 package com.vijanthi.computervathiyar.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.vijanthi.computervathiyar.util.Util
 import java.io.Serializable
 
 typealias CourseList = List<Course>
@@ -20,9 +21,14 @@ data class Course(
     var title: String,
     @SerializedName("chapter")
     var chapter: List<Chapter>,
-    @SerializedName("image")
+    @SerializedName("imageSrc")
     var image: String?
-)
+) {
+    fun getCourseImage(): String? {
+        if (image == null) return null
+        return "${Util.getImageUrl()}$image"
+    }
+}
 
 
 data class Chapter(

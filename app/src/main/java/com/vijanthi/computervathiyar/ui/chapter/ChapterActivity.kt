@@ -83,6 +83,7 @@ class ChapterActivity : AppCompatActivity() {
                     fetchData(data)
                 }
             }
+            isVerticalScrollBarEnabled = false
         }
         binding.lessonWv.settings.apply {
             javaScriptEnabled = true
