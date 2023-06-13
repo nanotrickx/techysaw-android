@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.sharp.Notifications
 import androidx.compose.material.icons.sharp.Star
@@ -81,6 +83,7 @@ import com.vijanthi.computervathiyar.ui.theme.gradientStart
 import com.vijanthi.computervathiyar.ui.theme.primaryColor
 import com.vijanthi.computervathiyar.ui.theme.primaryColor2
 import com.vijanthi.computervathiyar.util.ScreenSize
+import com.vijanthi.computervathiyar.util.isNetworkAvailable
 
 
 @Composable
@@ -200,7 +203,7 @@ fun HomeBody(viewModel: HomeViewModel, navController: NavHostController) {
     val searchNotFound by rememberLottieComposition(LottieCompositionSpec.Asset("animations/search_notfound.json"))
 
     Spacer(modifier = Modifier.height(16.dp))
-
+    val context = LocalContext.current
     when (viewModel.uiState.state) {
         HomeUiState.State.None,
         HomeUiState.State.Empty -> Box(
@@ -217,17 +220,27 @@ fun HomeBody(viewModel: HomeViewModel, navController: NavHostController) {
             )
         }
 
-        HomeUiState.State.Error -> Box(
-            modifier = Modifier.fillMaxSize()
+        HomeUiState.State.Error -> Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                viewModel.uiState.error?.localizedMessage ?: "Unknown error. Please try later.",
+                if (context.isNetworkAvailable()) "Unknown error. Please try later." else "Internet not available.\nPlease enable internet to continue.",
                 modifier = Modifier
-                    .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(vertical = 10.dp),
                 textAlign = TextAlign.Center
             )
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                .clickable {
+                    viewModel.getAllCourses()
+                }
+                .padding(horizontal = 4.dp, vertical = 2.dp)) {
+                Icon(Icons.Default.Refresh, "refresh")
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(text = "Refresh", style = MaterialTheme.typography.displaySmall)
+            }
         }
 
         HomeUiState.State.Loading -> {

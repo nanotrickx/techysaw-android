@@ -20,6 +20,7 @@ class HomeViewModel @Inject constructor(
     private var _uiState by mutableStateOf(HomeUiState())
     val uiState: HomeUiState get() = _uiState
 
+
     init {
         getAllCourses()
     }

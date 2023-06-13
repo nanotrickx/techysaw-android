@@ -52,6 +52,7 @@ import com.vijanthi.computervathiyar.ui.course.viewmodel.CourseUiState
 import com.vijanthi.computervathiyar.ui.course.viewmodel.CourseViewModel
 import com.vijanthi.computervathiyar.util.Constants
 import com.vijanthi.computervathiyar.util.ScreenSize
+import com.vijanthi.computervathiyar.util.isNetworkAvailable
 
 @Composable
 fun CourseScreen(
@@ -61,6 +62,7 @@ fun CourseScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchCourse(slug)
     }
+    val context = LocalContext.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -109,8 +111,7 @@ fun CourseScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Text(
-                        viewModel.uiState.error?.localizedMessage
-                            ?: "Unknown error. Please try later.",
+                        if (context.isNetworkAvailable()) "Unknown error. Please try later." else "Internet not available. Please enable internet to continue.",
                         modifier = Modifier
                             .align(Alignment.Center)
                             .fillMaxWidth()
@@ -127,7 +128,7 @@ fun CourseScreen(
                 }
 
                 CourseUiState.State.Success -> {
-                    CourseChapter(viewModel.uiState.course, navController, viewModel)
+                    CourseChapter(viewModel.uiState.course, viewModel)
                 }
             }
         }
@@ -135,7 +136,7 @@ fun CourseScreen(
 }
 
 @Composable
-fun CourseChapter(course: Course?, navController: NavHostController, viewModel: CourseViewModel) {
+fun CourseChapter(course: Course?, viewModel: CourseViewModel) {
     val ss = ScreenSize()
     val context = LocalContext.current
 
@@ -146,10 +147,11 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(ss.heightOf(by = 4).dp), shape = CircleShape.copy(CornerSize(22.dp))
-        ,
+                .height(ss.heightOf(by = 4).dp),
+            shape = CircleShape.copy(CornerSize(22.dp)),
 
-        ) {
+
+            ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(course.getCourseImage())
@@ -159,7 +161,9 @@ fun CourseChapter(course: Course?, navController: NavHostController, viewModel: 
                     .crossfade(true)
                     .build(),
                 contentDescription = course.slug,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
                 contentScale = ContentScale.Fit
             )
         }
