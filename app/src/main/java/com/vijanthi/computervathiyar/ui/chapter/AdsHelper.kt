@@ -14,6 +14,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.vijanthi.computervathiyar.BuildConfig
 import com.vijanthi.computervathiyar.data.db.dao.CourseDao
 import com.vijanthi.computervathiyar.data.model.AdViewReport
 import com.vijanthi.computervathiyar.data.model.Chapter
@@ -22,6 +23,7 @@ import com.vijanthi.computervathiyar.util.PrefManager
 import com.vijanthi.computervathiyar.util.TAG
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -36,7 +38,7 @@ class AdsHelper(
 ) : DefaultLifecycleObserver {
 
     private var rewardedAd: RewardedAd? = null
-    private val isDebug = true
+    private val isDebug = BuildConfig.DEBUG
     private var addUnit =
         if (isDebug) "ca-app-pub-3940256099942544/5224354917" else "ca-app-pub-8740059452952570/7674868822"
 
@@ -68,29 +70,36 @@ class AdsHelper(
         awaitClose { cancel() }
     }
 
+    fun loadAd() {
+        lifecycleScope.launch {
+            setupAds().collectLatest {
+                if (it) setupAdCallback()
+                showReadLimitReached()
+            }
+        }
+    }
+
     fun initAd() {
         Log.d(TAG, "init() called")
         lifecycleScope.launch {
-            setupAds().collectLatest {
-                Log.d(TAG, "setupAds() called isSuccess $it")
-                if (it) setupAdCallback()
-                val avr = prefManger.adViewReport
-                Log.d(TAG, "initAd() called ${chapter.slug} $avr")
-                if (avr == null) {
-                    prefManger.adViewReport = AdViewReport(lastAdViewTime = System.currentTimeMillis(), 2)
-                    showChapter()
-                } else {
-                    if (avr.adViewProvision == 0) {
-                        showReadLimitReached()
-                        return@collectLatest
-                    }
-                    val crc = courseDao.getCourseReadChapters(chapter.slug!!)
-                    if (crc == null || crc.readCount <= 1 || crc.readCount % 3 == 0) {
-                        avr.adViewProvision--
-                        prefManger.adViewReport = avr
-                    }
-                    showChapter()
+            val avr = prefManger.adViewReport
+            if (avr == null) {
+                prefManger.adViewReport =
+                    AdViewReport(lastAdViewTime = System.currentTimeMillis(), 10)
+                delay(3000)
+                showChapter()
+            } else {
+                if (avr.adViewProvision == 0) {
+                    loadAd()
+                    return@launch
                 }
+//                val crc = courseDao.getCourseReadChapters(chapter.slug!!)
+//                if (crc == null || crc.readCount <= 1 || crc.readCount % 3 == 0) {
+                avr.adViewProvision--
+                prefManger.adViewReport = avr
+//                }
+                delay(3000)
+                showChapter()
             }
         }
     }
@@ -151,8 +160,8 @@ class AdsHelper(
         Log.d(TAG, "onCreate() called with: owner = $owner")
         binding.watchAdBt.setOnClickListener {
             if (rewardedAd == null) {
-                Toast.makeText(context, "Ad not yet ready", Toast.LENGTH_SHORT).show()
-                initAd()
+                Toast.makeText(context, "Ad not yet ready, Please wait", Toast.LENGTH_SHORT).show()
+                loadAd()
                 return@setOnClickListener
             }
             rewardedAd?.show(context) { rewardItem ->
@@ -161,7 +170,7 @@ class AdsHelper(
                 val rewardType = rewardItem.type
                 Log.d("TAG", "User earned the reward. $rewardAmount $rewardType")
                 prefManger.adViewReport =
-                    AdViewReport(lastAdViewTime = System.currentTimeMillis(), 2)
+                    AdViewReport(lastAdViewTime = System.currentTimeMillis(), rewardAmount)
                 Toast.makeText(context, "Chapter read provisioned", Toast.LENGTH_LONG).show()
                 showChapter()
             }

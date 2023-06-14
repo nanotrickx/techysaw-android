@@ -1,7 +1,9 @@
 package com.vijanthi.computervathiyar.util
 
+import com.vijanthi.computervathiyar.BuildConfig
+
 object Util {
-    private const val isDev = false
+    private val isDev = BuildConfig.DEBUG
     fun getImageUrl(): String {
         return if (isDev) "https://vi-image-dev.s3.ap-south-1.amazonaws.com/" else "https://vi-image-production.s3.ap-south-1.amazonaws.com/"
     }
