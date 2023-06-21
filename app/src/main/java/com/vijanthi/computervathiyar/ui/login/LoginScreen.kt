@@ -1,6 +1,5 @@
 package com.vijanthi.computervathiyar.ui.login
 
-import android.R.attr.start
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,13 +41,12 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.vijanthi.computervathiyar.R
 import com.vijanthi.computervathiyar.ui.login.components.GoogleButton
 import com.vijanthi.computervathiyar.ui.login.components.rememberFirebaseAuthLauncher
-import com.vijanthi.computervathiyar.ui.theme.gradientLoginEnd
-import com.vijanthi.computervathiyar.ui.theme.gradientLoginMiddle
 import com.vijanthi.computervathiyar.ui.theme.gradientLoginMiddleBefore
 import com.vijanthi.computervathiyar.ui.theme.gradientLoginStart
 import com.vijanthi.computervathiyar.ui.theme.primaryColor
@@ -58,12 +55,14 @@ import com.vijanthi.computervathiyar.ui.theme.primaryColor2
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
+    val analytics = Firebase.analytics
     var user by remember { mutableStateOf(Firebase.auth.currentUser) }
     val loginSplash by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login_splash))
     val context = LocalContext.current
     val launcher = rememberFirebaseAuthLauncher(
         onAuthComplete = { result ->
             user = result.user
+            user?.let { analytics.setUserId(it.uid) }
             navController.navigateToHome()
         },
         onAuthError = {

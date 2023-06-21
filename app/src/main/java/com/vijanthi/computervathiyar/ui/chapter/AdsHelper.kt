@@ -38,7 +38,7 @@ class AdsHelper(
 ) : DefaultLifecycleObserver {
 
     private var rewardedAd: RewardedAd? = null
-    private val isDebug = BuildConfig.DEBUG
+    private val isDebug = false
     private var addUnit =
         if (isDebug) "ca-app-pub-3940256099942544/5224354917" else "ca-app-pub-8740059452952570/7674868822"
 
@@ -85,7 +85,10 @@ class AdsHelper(
             val avr = prefManger.adViewReport
             if (avr == null) {
                 prefManger.adViewReport =
-                    AdViewReport(lastAdViewTime = System.currentTimeMillis(), 10)
+                    AdViewReport(
+                        lastAdViewTime = System.currentTimeMillis(),
+                        if (BuildConfig.DEBUG) 2 else 10
+                    )
                 delay(3000)
                 showChapter()
             } else {

@@ -22,6 +22,8 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.vijanthi.computervathiyar.ui.course.CourseScreen
@@ -34,11 +36,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
+        firebaseAnalytics = Firebase.analytics
         setContent {
             TechysawTheme {
                 // A surface container using the 'background' color from the theme

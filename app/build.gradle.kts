@@ -150,6 +150,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.5.0")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
@@ -162,17 +163,6 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
 
     implementation("io.coil-kt:coil-compose:2.2.2")
-
-//    implementation("io.realm.kotlin:library-base:1.8.0")
-
-//      firebase
-//    implementation(enforcedPlatform("com.google.firebase:firebase-bom:26.1.0")
-//    implementation("com.google.firebase:firebase-core")
-//    implementation("com.google.firebase:firebase-firestore")
-//    implementation("com.google.firebase:firebase-auth-ktx")
-//    implementation("com.google.firebase:firebase-messaging")
-//    implementation("com.google.firebase:firebase-analytics")
-//    implementation("com.google.firebase:firebase-config")
 
     // Accompanist libraries
     implementation("com.google.accompanist:accompanist-swiperefresh:0.31.2-alpha")
