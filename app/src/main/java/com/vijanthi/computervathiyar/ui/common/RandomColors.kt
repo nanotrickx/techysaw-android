@@ -4,10 +4,11 @@ import java.util.Arrays
 import java.util.Collections
 import java.util.Stack
 
-class RandomColors() {
+class RandomColors {
     private val recycle: Stack<Int> = Stack()
-    private val colors:Stack<Int> = Stack()
+    private val colors: Stack<Int> = Stack()
     val courseColors = mutableListOf<Int>()
+
     init {
         recycle.addAll(
             Arrays.asList(
@@ -19,7 +20,7 @@ class RandomColors() {
                 -0x86aab8, -0x616162, -0x9f8275, -0xcccccd
             )
         )
-        repeat(10) {
+        repeat(50) {
             courseColors.add(getColor())
         }
     }

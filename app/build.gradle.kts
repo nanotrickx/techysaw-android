@@ -20,8 +20,8 @@ android {
         applicationId = "com.vijanthi.computervathiyar"
         minSdk = 25
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.0.0.1"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -86,6 +86,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
             signingConfig = signingConfigs.getByName("computervathiyar")
         }
